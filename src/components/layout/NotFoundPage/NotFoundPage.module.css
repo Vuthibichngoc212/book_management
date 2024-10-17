@@ -1,0 +1,60 @@
+.container {
+	display: flex;
+	flex-direction: row;
+	width: 100vw;
+	min-height: 100vh;
+	max-height: 100vh;
+	overflow-x: hidden;
+	margin-bottom: 4.4rem;
+	background-color: #fafcfe;
+}
+
+.content {
+	display: flex;
+	flex-direction: column;
+	position: relative;
+	width: calc(100% - var(--sidebar-width));
+	/* min-width: 768px; */
+	max-width: 100%;
+	transition: width 0.3s ease-out;
+}
+
+.content.mini {
+	width: calc(100% - var(--sidebar-mini-width));
+}
+
+.pageContainer {
+	width: 100%;
+	height: calc(100% - var(--appheader-height));
+}
+
+.page {
+	width: 100%;
+	height: 100%;
+	/* 	padding: 0.5rem; */
+	padding: 0.5rem 1rem;
+	overflow-y: auto;
+	/* 	scrollbar-gutter: stable both-edges; */
+	position: relative;
+}
+
+.collapsedBtn {
+	position: absolute;
+	bottom: 48px;
+	left: -28px;
+	z-index: 1000;
+	width: 28px;
+	height: 28px;
+	background-color: #ffff;
+	border: none;
+	outline: none;
+	cursor: pointer;
+	border-radius: 4px 0 0 4px;
+}
+.contentWrapper {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	height: 100%;
+	margin: 0 3rem;
+}
