@@ -107,7 +107,7 @@ const Header = () => {
 			}}
 		>
 			<MenuItem onClick={handleAccountClick}>Thông tin tài khoản</MenuItem>
-			<MenuItem onClick={handleMenuClose}>Đơn hàng của tôi</MenuItem>
+			<MenuItem onClick={() => navigate('/orders/history')}>Đơn hàng của tôi</MenuItem>
 			<MenuItem onClick={handleLogoutClick}>Đăng xuất</MenuItem>
 		</Menu>
 	);
@@ -144,7 +144,12 @@ const Header = () => {
 					</>
 				)}
 				<Box
-					sx={{ color: theme.palette.text.secondary, display: 'flex', alignItems: 'center' }}
+					sx={{
+						color: theme.palette.text.secondary,
+						display: 'flex',
+						alignItems: 'center',
+						cursor: 'pointer'
+					}}
 					onClick={handleSearchOpen}
 				>
 					<SearchIcon />
@@ -171,10 +176,6 @@ const Header = () => {
 					onClick={handleCartOpen}
 				>
 					<IconButton size="large" aria-label="shopping cart" aria-haspopup="true">
-						{/* <Badge badgeContent={cart.totalItems} color="error">
-							{' '}
-							<ShoppingCartIcon />
-						</Badge> */}
 						<Badge badgeContent={cartData?.data?.totalItem || 0} color="error">
 							<ShoppingCartIcon />
 						</Badge>

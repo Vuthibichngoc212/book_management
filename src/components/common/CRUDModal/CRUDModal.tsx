@@ -9,6 +9,7 @@ interface ModalProps {
 	isOpenModal: boolean;
 	setIsOpenModal: any;
 	headerTitle: string;
+	showActions?: boolean;
 	cancelButtonLabel?: string;
 	submitButtonLabel?: string;
 	onSubmit?: () => void;
@@ -19,6 +20,7 @@ const CRUDModal = ({
 	isOpenModal,
 	setIsOpenModal,
 	headerTitle,
+	showActions = true,
 	cancelButtonLabel,
 	submitButtonLabel,
 	onSubmit,
@@ -49,24 +51,26 @@ const CRUDModal = ({
 
 				<Box>
 					<Box>{children}</Box>
-					<Box sx={{ display: 'flex', justifyContent: 'end', gap: '1.6rem' }}>
-						<Button
-							variant="outlined"
-							size="medium"
-							onClick={handleClose}
-							sx={{ textTransform: 'none' }}
-						>
-							{cancelButtonLabel}
-						</Button>
-						<Button
-							variant="contained"
-							size="medium"
-							onClick={onSubmit}
-							sx={{ textTransform: 'none' }}
-						>
-							{submitButtonLabel}
-						</Button>
-					</Box>
+					{showActions && (
+						<Box sx={{ display: 'flex', justifyContent: 'end', gap: '1.6rem' }}>
+							<Button
+								variant="outlined"
+								size="medium"
+								onClick={handleClose}
+								sx={{ textTransform: 'none' }}
+							>
+								{cancelButtonLabel}
+							</Button>
+							<Button
+								variant="contained"
+								size="medium"
+								onClick={onSubmit}
+								sx={{ textTransform: 'none' }}
+							>
+								{submitButtonLabel}
+							</Button>
+						</Box>
+					)}
 				</Box>
 			</Box>
 		</Modal>

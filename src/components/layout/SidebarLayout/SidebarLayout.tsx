@@ -13,7 +13,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { useStyles } from './Sidebar.styles';
-import logo from '@/assets/image/logo-sidebar.png';
+import logo from '@/assets/icon/logo-sidebar.svg';
 import { useLocation } from 'react-router-dom';
 import useRouter from '@/routes/routerHook';
 

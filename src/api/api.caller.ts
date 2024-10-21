@@ -61,6 +61,22 @@ export const apiCaller = createApi({
 				method: 'GET'
 			})
 		}),
+		getBooks: builder.query({
+			query: (queryArgs) => {
+				const params = new URLSearchParams(queryArgs);
+				return {
+					url: `/books?${params}`,
+					method: 'GET',
+					headers: REQUEST_HEADERS.header()
+				};
+			}
+		}),
+		getBookPublishers: builder.query({
+			query: () => ({
+				url: `/books/publishers`,
+				method: 'GET'
+			})
+		}),
 		createBook: builder.mutation({
 			query: (book) => ({
 				url: `/books`,
@@ -94,10 +110,36 @@ export const apiCaller = createApi({
 				method: 'GET'
 			})
 		}),
+		getOrderDetailAdminById: builder.query({
+			query: (id) => ({
+				url: `/order-details/admin/${id}`,
+				method: 'GET'
+			})
+		}),
+		getOrderDetailUserById: builder.query({
+			query: (id) => ({
+				url: `/order-details/user/${id}`,
+				method: 'GET'
+			})
+		}),
 		confirmOrder: builder.mutation({
 			query: (id) => ({
 				url: `/orders/admin/confirm/${id}`,
 				method: 'PUT'
+			})
+		}),
+		receivedOrder: builder.mutation({
+			query: (id) => ({
+				url: `/orders/user/received/${id}`,
+				method: 'PUT'
+			})
+		}),
+		cancelOrder: builder.mutation({
+			query: ({ id, note }) => ({
+				url: `/orders/cancel/${id}`,
+				method: 'PUT',
+				body: { note },
+				headers: REQUEST_HEADERS.jsonHeader()
 			})
 		}),
 		//customers
@@ -201,6 +243,14 @@ export const apiCaller = createApi({
 				method: 'POST'
 			})
 		}),
+		//payments
+		payments: builder.mutation({
+			query: (data) => ({
+				url: `/payments`,
+				method: 'POST',
+				body: data
+			})
+		}),
 		//comments
 		getAllComments: builder.query({
 			query: (id) => ({
@@ -209,10 +259,10 @@ export const apiCaller = createApi({
 			})
 		}),
 		createComment: builder.mutation({
-			query: (comment) => ({
-				url: `/comments`,
+			query: ({ id, data }) => ({
+				url: `/comments/${id}`,
 				method: 'POST',
-				body: comment,
+				body: data,
 				headers: REQUEST_HEADERS.jsonHeader()
 			})
 		})
@@ -229,12 +279,18 @@ export const {
 	useUpdateInfoUserMutation,
 	useGetAllBooksQuery,
 	useGetBookDetailByIdQuery,
+	useGetBooksQuery,
+	useGetBookPublishersQuery,
 	useCreateBookMutation,
 	useUpdateBookMutation,
 	useDeleteBookMutation,
 	useGetAllOrdersQuery,
 	useGetAllOrdersUserQuery,
+	useGetOrderDetailAdminByIdQuery,
+	useGetOrderDetailUserByIdQuery,
 	useConfirmOrderMutation,
+	useReceivedOrderMutation,
+	useCancelOrderMutation,
 	useGetAllCustomersQuery,
 	// useGetExportUserQuery,
 	useGetAllTopBooksQuery,
@@ -247,6 +303,7 @@ export const {
 	useCreateCartMutation,
 	useDeleteCartMutation,
 	useCheckoutCartMutation,
+	usePaymentsMutation,
 	useGetAllCommentsQuery,
 	useCreateCommentMutation
 } = apiCaller;

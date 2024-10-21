@@ -56,13 +56,14 @@ const FormModal = ({
 	useEffect(() => {
 		if (isOpenModal) {
 			if (editRole) {
+				console.log('editRole:', editRole);
+
 				const parsedDate = editRole.publishedDate ? dayjs(editRole.publishedDate) : null;
-				// const parsedDate = editRole.publishedDate ? dayjs(editRole.publishedDate).toDate() : null;
 
 				methods.setValue('title', editRole.title || '');
 				methods.setValue('author', editRole.author || '');
 				methods.setValue('price', editRole.price || 0);
-				methods.setValue('categoryID', editRole.categoryID || 0);
+				methods.setValue('categoryName', editRole.categoryName || 0);
 				methods.setValue('quantity', editRole.quantity || 0);
 				methods.setValue('publishedDate', parsedDate);
 				methods.setValue('publisher', editRole.publisher || '');
@@ -72,7 +73,7 @@ const FormModal = ({
 					title: '',
 					author: '',
 					price: 0,
-					categoryID: 0,
+					categoryName: '',
 					quantity: 0,
 					publishedDate: null,
 					publisher: '',
@@ -96,7 +97,6 @@ const FormModal = ({
 			data.publishedDate = new Date(data.publishedDate).toISOString().split('T')[0];
 		}
 
-		// Thêm tất cả các field từ form vào FormData
 		Object.keys(data).forEach((key) => {
 			formData.append(key, data[key]);
 		});
@@ -240,10 +240,10 @@ const FormModal = ({
 									<Grid item xs={6}>
 										<CustomSelectField
 											label="Thể loại"
-											name="categoryID"
+											name="categoryName"
 											control={methods.control}
 											options={categoryOptions}
-											defaultValue={methods.watch('categoryID') || ''}
+											defaultValue={methods.watch('categoryName') || ''}
 											// required
 										/>
 									</Grid>

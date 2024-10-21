@@ -13,6 +13,7 @@ import MyBooks from '@/pages/MyBooks/screens/MyBooks';
 import ProfileUser from '@/pages/ProfileUser/screens/ProfileUser';
 import CheckoutCart from '@/pages/HomePage/components/CheckoutCart/CheckoutCart';
 import OrderHistory from '@/pages/OrderHistory/screens/OrderHistory';
+import FilterBookSearch from '@/pages/FilterBookSearch/screens/FilterBookSearch';
 
 const routes = [
 	{
@@ -28,6 +29,11 @@ const routes = [
 		label: 'Book Detail',
 		path: ROUTE_PATH.BOOKS.DETAIL,
 		element: <BookDetail />
+	},
+	{
+		label: 'Filter book search',
+		path: ROUTE_PATH.FILTERBOOKSEARCH.INDEX,
+		element: <FilterBookSearch />
 	},
 	{
 		label: 'Cart Detail',

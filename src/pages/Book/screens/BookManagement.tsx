@@ -20,7 +20,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useState } from 'react';
 import FormModal from '../components/FormModal/FormModal';
 
-const MAX_DESCRIPTION_LENGTH = 30;
+const MAX_LENGTH = 25;
 
 const BookManagement = () => {
 	const [isOpenModal, setIsOpenModal] = useState(false);
@@ -135,19 +135,21 @@ const BookManagement = () => {
 											}}
 										/>
 									</TableCell>
-									<TableCell>{book.title}</TableCell>
+									{/* <TableCell>{book.title}</TableCell> */}
+									<TableCell>
+										<Tooltip title={book.title} arrow placement="top">
+											<Typography>{truncateText(book.title, MAX_LENGTH)}</Typography>
+										</Tooltip>
+									</TableCell>
 									<TableCell>{book.author}</TableCell>
 									<TableCell>{book.categoryName}</TableCell>
 									<TableCell>{book.publisher}</TableCell>
 									<TableCell>{new Date(book.publishedDate).getFullYear()}</TableCell>
 									<TableCell>{book.price.toFixed(2)}</TableCell>
 									<TableCell>{book.quantity}</TableCell>
-									{/* <TableCell>{book.description}</TableCell> */}
 									<TableCell>
 										<Tooltip title={book.description} arrow placement="top">
-											<Typography>
-												{truncateText(book.description, MAX_DESCRIPTION_LENGTH)}
-											</Typography>
+											<Typography>{truncateText(book.description, MAX_LENGTH)}</Typography>
 										</Tooltip>
 									</TableCell>
 									<TableCell>

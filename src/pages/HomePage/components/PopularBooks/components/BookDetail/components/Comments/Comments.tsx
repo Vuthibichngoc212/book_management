@@ -17,7 +17,8 @@ const Comments = ({
 	totalReviews,
 	isLoggedIn,
 	handleOpenModal,
-	navigate
+	navigate,
+	enableComment
 }: any) => {
 	return (
 		<>
@@ -106,7 +107,9 @@ const Comments = ({
 							'&.MuiGrid-item': { paddingLeft: '60px' }
 						}}
 					>
-						{isLoggedIn ? (
+						{/* {isLoggedIn ? ( */}
+						{isLoggedIn && enableComment ? (
+							// {enableComment ? (
 							<>
 								<Box sx={{}}>
 									<Button
@@ -128,24 +131,30 @@ const Comments = ({
 								</Box>
 							</>
 						) : (
-							<Typography variant="body2" sx={{ color: '#75787B', textAlign: 'center' }}>
-								Chỉ có thành viên mới có thể viết nhận xét. Vui lòng{' '}
-								<Link
-									href=""
-									sx={{ color: '#1e88e5', textDecoration: 'none' }}
-									onClick={() => navigate('/')}
-								>
-									đăng nhập
-								</Link>{' '}
-								hoặc{' '}
-								<Link
-									href=""
-									sx={{ color: '#1e88e5', textDecoration: 'none' }}
-									onClick={() => navigate('/')}
-								>
-									đăng ký
-								</Link>
-							</Typography>
+							<>
+								{enableComment ? (
+									<Typography variant="body2" sx={{ color: '#75787B', textAlign: 'center' }}>
+										Chỉ có thành viên đã mua hàng mới có thể viết nhận xét. Vui lòng{' '}
+										<Link
+											href=""
+											sx={{ color: '#1e88e5', textDecoration: 'none' }}
+											onClick={() => navigate('/')}
+										>
+											đăng nhập
+										</Link>{' '}
+										hoặc{' '}
+										<Link
+											href=""
+											sx={{ color: '#1e88e5', textDecoration: 'none' }}
+											onClick={() => navigate('/')}
+										>
+											đăng ký
+										</Link>
+									</Typography>
+								) : (
+									<>Chức năng viết nhận xét hiện không khả dụng</>
+								)}
+							</>
 						)}
 					</Grid>
 

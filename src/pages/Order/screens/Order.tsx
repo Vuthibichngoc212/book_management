@@ -1,4 +1,4 @@
-import { useGetAllOrdersQuery } from '@/api/api.caller';
+import { useConfirmOrderMutation, useGetAllOrdersQuery } from '@/api/api.caller';
 import {
 	Box,
 	Paper,
@@ -10,14 +10,75 @@ import {
 	TableRow,
 	Typography,
 	CircularProgress,
-	IconButton
+	Menu,
+	MenuItem,
+	Button,
+	IconButton,
+	Tooltip
 } from '@mui/material';
-import Edit from '@mui/icons-material/Edit';
-import Delete from '@mui/icons-material/Delete';
+import { useState } from 'react';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import moreIcon from '@/assets/icon/more-icon.svg';
+import FormModal from '../components/FormModal/FormModal';
+import DialogCancel from '../components/DialogCancel/DialogCancel';
 
 const Order = () => {
-	const { data: ordersData, isLoading, error } = useGetAllOrdersQuery(undefined);
+	const [isOpenModal, setIsOpenModal] = useState(false);
+	const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
+	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+	const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
+
+	const { data: ordersData, isLoading, error, refetch } = useGetAllOrdersQuery(undefined);
 	const orders = ordersData?.data?.elements || [];
+
+	const [confirmOrder] = useConfirmOrderMutation();
+
+	const handleStatusClick = (event: React.MouseEvent<HTMLElement>, orderId: number) => {
+		setAnchorEl(event.currentTarget);
+		setSelectedOrderId(orderId);
+	};
+
+	const handleClose = () => {
+		setAnchorEl(null);
+	};
+
+	const handleOpenModal = (orderId: number) => {
+		setSelectedOrderId(orderId);
+		setIsOpenModal(true);
+	};
+
+	const handleOpenCancelDialog = (orderId: number) => {
+		setSelectedOrderId(orderId);
+		setIsCancelDialogOpen(true);
+	};
+
+	const handleCloseCancelDialog = () => {
+		setIsCancelDialogOpen(false);
+	};
+
+	const handleStatusChange = async (status: string) => {
+		try {
+			if (status === 'Completed') {
+				await confirmOrder(selectedOrderId);
+				toast.success('Đơn hàng đã được xác nhận', {
+					theme: 'colored',
+					autoClose: 2000,
+					position: 'bottom-right'
+				});
+				refetch();
+			}
+		} catch (error) {
+			toast.error('Có lỗi xảy ra khi cập nhật trạng thái đơn hàng', {
+				theme: 'colored',
+				autoClose: 2000,
+				position: 'bottom-right'
+			});
+		} finally {
+			handleClose();
+		}
+	};
 
 	if (isLoading) {
 		return (
@@ -35,9 +96,9 @@ const Order = () => {
 
 	const getStatusStyle = (status: string) => {
 		switch (status) {
-			case 'Canceled':
+			case 'CANCELLED':
 				return { backgroundColor: '#ffebee', color: '#c62828' };
-			case 'Delivered':
+			case 'Delivering':
 				return { backgroundColor: '#e8f5e9', color: '#2e7d32' };
 			case 'Completed':
 				return { backgroundColor: '#e3f2fd', color: '#1565c0' };
@@ -50,6 +111,7 @@ const Order = () => {
 
 	return (
 		<>
+			<ToastContainer />
 			<Box>
 				<TableContainer
 					component={Paper}
@@ -63,7 +125,8 @@ const Order = () => {
 								<TableCell sx={{ fontWeight: 'bold' }}>Tên khách hàng</TableCell>
 								<TableCell sx={{ fontWeight: 'bold' }}>Email</TableCell>
 								<TableCell sx={{ fontWeight: 'bold' }}>Ngày đặt hàng</TableCell>
-								<TableCell sx={{ fontWeight: 'bold' }}>Tổng số tiền</TableCell>
+								<TableCell sx={{ fontWeight: 'bold' }}>Tổng tiền</TableCell>
+								<TableCell sx={{ fontWeight: 'bold' }}>Lý do hủy</TableCell>
 								<TableCell sx={{ fontWeight: 'bold' }}>Trạng thái</TableCell>
 								<TableCell sx={{ fontWeight: 'bold' }}>Thao tác</TableCell>
 							</TableRow>
@@ -79,27 +142,63 @@ const Order = () => {
 									<TableCell>{order.email}</TableCell>
 									<TableCell>{order.orderDate}</TableCell>
 									<TableCell>{order.totalAmount.toFixed(2)}</TableCell>
+									<TableCell>{order.note}</TableCell>
 									<TableCell>
-										<Box
-											sx={{
-												...getStatusStyle(order.status),
-												padding: '4px 8px',
-												borderRadius: '8px',
-												textAlign: 'center',
-												display: 'inline-block',
-												cursor: 'pointer'
-											}}
+										{order.status === 'Pending' ? (
+											<Button
+												variant="outlined"
+												size="small"
+												onClick={(e) => handleStatusClick(e, order.id)}
+												sx={{
+													color: '#ef6c00',
+													borderRadius: '8px',
+													border: 'none',
+													backgroundColor: '#fff3e0',
+													textTransform: 'none',
+													'&:hover': {
+														backgroundColor: '#fff3e0',
+														color: '#ef6c00',
+														border: 'none'
+													}
+												}}
+											>
+												Đang chờ
+												<ExpandMoreIcon sx={{ marginLeft: '4px', width: '20px', height: '20px' }} />
+											</Button>
+										) : (
+											<Typography
+												variant="body2"
+												sx={{
+													padding: '4px 8px',
+													borderRadius: '8px',
+													backgroundColor: getStatusStyle(order.status).backgroundColor,
+													color: getStatusStyle(order.status).color,
+													textAlign: 'center',
+													display: 'inline-block',
+													cursor: 'pointer'
+												}}
+											>
+												{order.status}
+											</Typography>
+										)}
+
+										<Menu
+											anchorEl={anchorEl}
+											open={Boolean(anchorEl) && selectedOrderId === order.id}
+											onClose={handleClose}
+											anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+											transformOrigin={{ vertical: 'top', horizontal: 'right' }}
 										>
-											{order.status}
-										</Box>
+											<MenuItem onClick={() => handleStatusChange('Completed')}>Xác nhận</MenuItem>
+											<MenuItem onClick={() => handleOpenCancelDialog(order.id)}>Từ chối</MenuItem>
+										</Menu>
 									</TableCell>
 									<TableCell>
-										<IconButton color="primary">
-											<Edit />
-										</IconButton>
-										<IconButton color="error">
-											<Delete />
-										</IconButton>
+										<Tooltip title="Xem chi tiết đơn hàng">
+											<IconButton color="primary" onClick={() => handleOpenModal(order.id)}>
+												<img alt="Xem chi tiết" src={moreIcon} />
+											</IconButton>
+										</Tooltip>
 									</TableCell>
 								</TableRow>
 							))}
@@ -107,6 +206,19 @@ const Order = () => {
 					</Table>
 				</TableContainer>
 			</Box>
+
+			<FormModal
+				isOpenModal={isOpenModal}
+				setIsOpenModal={setIsOpenModal}
+				headerTitle="Xem chi tiết đơn hàng"
+				orderId={selectedOrderId}
+			/>
+
+			<DialogCancel
+				isOpen={isCancelDialogOpen}
+				onClose={handleCloseCancelDialog}
+				orderId={selectedOrderId}
+			/>
 		</>
 	);
 };

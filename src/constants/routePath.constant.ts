@@ -18,8 +18,10 @@ export const ROUTE_PATH = {
 	},
 	BOOKS: {
 		INDEX: '/books',
-		LIST: '/books',
 		DETAIL: '/books/:id'
+	},
+	FILTERBOOKSEARCH: {
+		INDEX: '/filter-books-search'
 	},
 	MYBOOKS: {
 		INDEX: '/mybooks',

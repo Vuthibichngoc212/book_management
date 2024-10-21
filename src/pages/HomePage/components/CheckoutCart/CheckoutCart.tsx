@@ -9,7 +9,6 @@ import {
 	Grid,
 	Card,
 	CardContent,
-	// CardMedia,
 	Paper
 } from '@mui/material';
 import momoIcon from '@/assets/image/momo.jpg';
@@ -21,7 +20,8 @@ import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import {
 	useCheckoutCartMutation,
 	useGetAllCartsQuery,
-	useGetInfoUserQuery
+	useGetInfoUserQuery,
+	usePaymentsMutation
 } from '@/api/api.caller';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -30,10 +30,11 @@ import { useNavigate } from 'react-router-dom';
 const CheckoutCart = () => {
 	const navigate = useNavigate();
 	const [isExpanded, setIsExpanded] = useState(false);
-
+	const [paymentMethod, setPaymentMethod] = useState('');
 	const { data: userData } = useGetInfoUserQuery(undefined);
 	const userInfo = userData?.data;
 	const [checkoutCart] = useCheckoutCartMutation();
+	const [payWithMomo] = usePaymentsMutation();
 
 	const { data: cartData } = useGetAllCartsQuery(undefined);
 	const cartItems = cartData?.data?.cartResponses || [];
@@ -47,19 +48,44 @@ const CheckoutCart = () => {
 	const shippingCost = 30000;
 	const total = totalPayment + shippingCost;
 
+	const handlePaymentChange = (event: any) => {
+		setPaymentMethod(event.target.value);
+	};
+
 	const handleCheckoutCart = async () => {
 		try {
-			await checkoutCart(undefined);
-			toast.success('Mua hàng thành công!', {
-				theme: 'colored',
-				autoClose: 2000,
-				position: 'bottom-right'
-			});
-			setTimeout(() => {
-				navigate('/home');
-			}, 1000);
+			if (paymentMethod === 'viMomo') {
+				const response = await payWithMomo(undefined);
+				const paymentUrl = response.data.data;
+				if (paymentUrl) {
+					toast.success('Chuyển đến trang thanh toán Momo!', {
+						theme: 'colored',
+						autoClose: 2000,
+						position: 'bottom-right'
+					});
+					setTimeout(() => {
+						window.open(paymentUrl, '_blank');
+					}, 1000);
+				} else {
+					toast.error('URL thanh toán không hợp lệ!', {
+						theme: 'colored',
+						autoClose: 2000,
+						position: 'bottom-right'
+					});
+				}
+			} else {
+				await checkoutCart(undefined);
+				toast.success('Mua hàng thành công!', {
+					theme: 'colored',
+					autoClose: 2000,
+					position: 'bottom-right'
+				});
+				setTimeout(() => {
+					navigate('/orders/history');
+				}, 1000);
+			}
 		} catch (error) {
-			toast.error('Mua hàng thất bại!', {
+			toast.error(`Thanh toán thất bại`, {
 				theme: 'colored',
 				autoClose: 2000,
 				position: 'bottom-right'
@@ -218,7 +244,11 @@ const CheckoutCart = () => {
 								Chọn hình thức Thanh toán
 							</Typography>
 							<Box>
-								<RadioGroup defaultValue="thanhToanTienMat" name="byPay">
+								<RadioGroup
+									defaultValue="thanhToanTienMat"
+									name="byPay"
+									onChange={handlePaymentChange}
+								>
 									<FormControlLabel
 										value="thanhToanTienMat"
 										control={<Radio />}

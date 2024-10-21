@@ -1,8 +1,5 @@
-// import { SELECT_COLOR } from '@/constants/color.constant';
-import theme from '@/styles/theme';
 import { Box, FormHelperText, InputLabel, MenuItem, Select, Typography } from '@mui/material';
 import { Control, Controller, useController } from 'react-hook-form';
-// import { useStyles } from './CustomSelectField.styles';
 
 export interface SelectOption {
 	label?: string;
@@ -73,10 +70,7 @@ export function CustomSelectField({
 						onBlur={onBlur}
 						className={classNameSelect}
 						sx={{
-							backgroundColor: handleColorValue ? handleColorValue(value) : 'initial', // Use the function here
-							'& .MuiSelect-icon': {
-								color: value ? theme.palette.common.white : theme.palette.common.black
-							},
+							backgroundColor: handleColorValue ? handleColorValue(value) : 'initial',
 							'&.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline': {
 								borderColor: 'rgba(0, 0, 0, 0.23)'
 							},

@@ -4,8 +4,7 @@ export interface IBooks {
 	author: string;
 	price: number;
 	quantity: number;
-	categoryID: number;
-	categoryName?: string;
+	categoryName: string;
 	description: string;
 	publisher: string;
 	publishedDate: Date | null;

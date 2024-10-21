@@ -1,8 +1,6 @@
 export interface IComments {
-	id?: number;
 	comment: string;
-	fullName: string;
-	ratting: number;
+	rating: number;
 }
 
 export interface IBooksResponse {

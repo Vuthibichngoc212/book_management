@@ -14,8 +14,6 @@ import {
 	IconButton,
 	Tooltip,
 	Divider,
-	// Link,
-	// LinearProgress,
 	CircularProgress
 } from '@mui/material';
 import {
@@ -68,6 +66,15 @@ const BookDetail = () => {
 	};
 
 	useEffect(() => {
+		console.log(commnets); // Log the fetched comments data
+	}, [commnets]);
+	useEffect(() => {
+		if (!isOpenModal) {
+			refetch(); // Gọi refetch để cập nhật comments sau khi modal đóng
+		}
+	}, [isOpenModal]);
+
+	useEffect(() => {
 		const token = localStorage.getItem('userToken');
 		setIsLoggedIn(!!token);
 	}, []);
@@ -83,6 +90,7 @@ const BookDetail = () => {
 	if (isError || !bookData) return <Typography>Error loading book details</Typography>;
 
 	const book = bookData.data;
+	const enableComment = commnets?.enableComment || false;
 
 	const handleIncreaseQuantity = () => setQuantity((prev: any) => prev + 1);
 	const handleDecreaseQuantity = () => setQuantity((prev: any) => Math.max(1, prev - 1));
@@ -315,7 +323,7 @@ const BookDetail = () => {
 								<Typography sx={{ marginLeft: '32px', marginTop: '8px', fontSize: '14px' }}>
 									Dự kiến giao
 									<span style={{ fontWeight: 'bold', marginLeft: '8px', fontSize: '14px' }}>
-										Thứ hai - 07/10
+										3 - 5 ngày
 									</span>
 								</Typography>
 							</Box>
@@ -494,6 +502,7 @@ const BookDetail = () => {
 					isLoggedIn={isLoggedIn}
 					handleOpenModal={handleOpenModal}
 					navigate={navigate}
+					enableComment={enableComment}
 				/>
 			</Box>
 
@@ -511,6 +520,7 @@ const BookDetail = () => {
 				headerTitle={'Viết đánh giá sản phẩm'}
 				cancelButtonLabel="Hủy"
 				submitButtonLabel={'Gửi nhận xét'}
+				bookId={id}
 			/>
 			<Footer />
 		</>
