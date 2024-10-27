@@ -3,6 +3,7 @@ import {
 	useGetBookPublishersQuery,
 	useGetBooksQuery
 } from '@/api/api.caller';
+import NoDataCommon from '@/components/common/NoDataCommon/NoDataCommon';
 import { Header } from '@/components/layout';
 import {
 	Box,
@@ -86,10 +87,6 @@ const FilterBookSearch = () => {
 	const handlePublisherChange = (event: any) => {
 		setSelectedPublisher(event.target.value);
 	};
-
-	// const handlePriceChange = (event: any) => {
-	// 	setPriceRange(event.target.value);
-	// };
 
 	return (
 		<>
@@ -207,7 +204,11 @@ const FilterBookSearch = () => {
 					>
 						<Typography sx={{ fontSize: '14px', fontWeight: '600' }}>
 							KẾT QUẢ TÌM KIẾM:{' '}
-							{isFetching ? <CircularProgress size={14} /> : booksData?.data?.totalElements || 0}
+							{isFetching ? (
+								<CircularProgress size={14} />
+							) : (
+								booksData?.data?.totalElements || currentBooks.length
+							)}
 						</Typography>
 
 						<Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -257,53 +258,61 @@ const FilterBookSearch = () => {
 							gap: '16px'
 						}}
 					>
-						{currentBooks.map((book: any, index: any) => (
-							<Paper
-								key={index}
-								sx={{
-									padding: '8px',
-									borderRadius: '8px',
-									boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.1)'
-								}}
-							>
-								<img src={book.image} alt={book.title} style={{ width: '100%' }} />
-								<Typography
-									sx={{ fontSize: '18px', fontWeight: '600', color: '#E76F51', marginTop: '4px' }}
-								>
-									{book.price}
-									{''}đ
-								</Typography>
-
-								<Typography sx={{ fontSize: '14px', fontWeight: '500', marginTop: '3px' }}>
-									{book.title}
-								</Typography>
-								<Box
+						{currentBooks?.length > 0 ? (
+							currentBooks.map((book: any, index: any) => (
+								<Paper
+									key={index}
 									sx={{
-										display: 'flex',
-										alignItems: 'center',
-										marginTop: '6px'
+										padding: '8px',
+										borderRadius: '8px',
+										boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.1)'
 									}}
 								>
-									<Rating
-										value={book.averageRating}
-										precision={0.5}
-										readOnly
-										size="small"
-										sx={{ fontSize: '14px' }}
-									/>
+									<img src={book.image} alt={book.title} style={{ width: '100%' }} />
 									<Typography
+										sx={{ fontSize: '18px', fontWeight: '600', color: '#E76F51', marginTop: '4px' }}
+									>
+										{book.price} đ
+									</Typography>
+									<Typography sx={{ fontSize: '14px', fontWeight: '500', marginTop: '3px' }}>
+										{book.title}
+									</Typography>
+									<Box
 										sx={{
-											marginLeft: '5px',
-											color: '#75787B',
-											fontWeight: 'bold',
-											fontSize: '14px'
+											display: 'flex',
+											alignItems: 'center',
+											marginTop: '6px'
 										}}
 									>
-										({book.purchaseCount} đã bán)
-									</Typography>
-								</Box>
-							</Paper>
-						))}
+										<Rating
+											value={book.averageRating}
+											precision={0.5}
+											readOnly
+											size="small"
+											sx={{ fontSize: '14px' }}
+										/>
+										<Typography
+											sx={{
+												marginLeft: '5px',
+												color: '#75787B',
+												fontWeight: 'bold',
+												fontSize: '14px'
+											}}
+										>
+											({book.purchaseCount} đã bán)
+										</Typography>
+									</Box>
+								</Paper>
+							))
+						) : (
+							<Box
+								sx={{
+									gridColumn: '1 / -1'
+								}}
+							>
+								<NoDataCommon />
+							</Box>
+						)}
 					</Box>
 				</Box>
 			</Box>

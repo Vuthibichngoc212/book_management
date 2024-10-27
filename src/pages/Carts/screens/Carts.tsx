@@ -19,7 +19,12 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import giftIcon from '@/assets/icon/chose_gift.webp';
 import CouponIcon from '@/assets/icon/ico_coupon.svg';
 import Footer from '@/components/layout/Footer/Footer';
-import { useDeleteCartMutation, useGetAllCartsQuery } from '@/api/api.caller';
+import {
+	useCreateCartMutation,
+	useDeleteCartMutation,
+	useGetAllCartsQuery,
+	useUpdateCartMutation
+} from '@/api/api.caller';
 import { useNavigate } from 'react-router-dom';
 
 const CartItem = () => {
@@ -27,21 +32,68 @@ const CartItem = () => {
 	const [quantity, setQuantity] = useState<number[]>([]);
 	const { data: cartData, isLoading, refetch } = useGetAllCartsQuery(undefined);
 	const [deleteCart] = useDeleteCartMutation();
+	const [createCart] = useCreateCartMutation();
+	const [updateCart] = useUpdateCartMutation();
 
-	const handleIncreaseQuantity = (index: number) => {
+	const handleIncreaseQuantity = async (index: number) => {
+		const newQuantity = (quantity[index] || cartItems[index].quantity) + 1;
+
+		const payload = {
+			bookId: cartItems[index].bookId,
+			newQuantity
+		};
+
 		setQuantity((prev) => {
 			const newQuantities = [...prev];
-			newQuantities[index] = (newQuantities[index] || 1) + 1;
+			newQuantities[index] = newQuantity;
 			return newQuantities;
 		});
+
+		try {
+			await createCart(payload);
+			toast.success('Cập nhật giỏ hàng thành công!', {
+				theme: 'colored',
+				autoClose: 2000,
+				position: 'bottom-right'
+			});
+		} catch (error) {
+			toast.error('Cập nhật giỏ hàng thất bại!', {
+				theme: 'colored',
+				autoClose: 2000,
+				position: 'bottom-right'
+			});
+		}
 	};
 
-	const handleDecreaseQuantity = (index: number) => {
+	const handleDecreaseQuantity = async (index: number) => {
+		const currentQuantity = quantity[index] || cartItems[index].quantity;
+		const newQuantity = Math.max(1, currentQuantity - 1);
+
+		const payload = {
+			bookId: cartItems[index].bookId,
+			newQuantity
+		};
+
 		setQuantity((prev) => {
 			const newQuantities = [...prev];
-			newQuantities[index] = Math.max(1, (newQuantities[index] || 1) - 1);
+			newQuantities[index] = newQuantity;
 			return newQuantities;
 		});
+
+		try {
+			await updateCart(payload);
+			toast.success('Cập nhật giỏ hàng thành công!', {
+				theme: 'colored',
+				autoClose: 2000,
+				position: 'bottom-right'
+			});
+		} catch (error) {
+			toast.error('Cập nhật giỏ hàng thất bại!', {
+				theme: 'colored',
+				autoClose: 2000,
+				position: 'bottom-right'
+			});
+		}
 	};
 
 	const handleDeleteCart = async (bookId: string) => {

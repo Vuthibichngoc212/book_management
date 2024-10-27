@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useGetAllCustomersQuery } from '@/api/api.caller';
-import { SaveAlt } from '@mui/icons-material';
 import {
 	Box,
 	Paper,
@@ -11,7 +10,6 @@ import {
 	TableHead,
 	TableRow,
 	Typography,
-	Button,
 	CircularProgress,
 	TablePagination
 } from '@mui/material';
@@ -49,23 +47,6 @@ const Customer = () => {
 	return (
 		<>
 			<Box>
-				<Box sx={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 2 }}>
-					<Button
-						startIcon={<SaveAlt />}
-						sx={{
-							padding: '5px 15px',
-							backgroundColor: '#485CC7',
-							color: '#fff',
-							textTransform: 'none',
-							'&:hover': {
-								backgroundColor: '#3a4c99'
-							}
-						}}
-					>
-						Xuất file
-					</Button>
-				</Box>
-
 				<TableContainer
 					component={Paper}
 					elevation={3}
@@ -103,18 +84,18 @@ const Customer = () => {
 						</TableBody>
 					</Table>
 				</TableContainer>
-
-				<Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: '16px' }}>
-					<TablePagination
-						rowsPerPageOptions={[10, 25, 50]}
-						component="div"
-						count={users.length}
-						rowsPerPage={rowsPerPage}
-						page={page}
-						onPageChange={handleChangePage}
-						onRowsPerPageChange={handleChangeRowsPerPage}
-					/>
-				</Box>
+			</Box>
+			<Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: '16px' }}>
+				<TablePagination
+					rowsPerPageOptions={[10, 25, 50]}
+					component="div"
+					count={users.length}
+					// count={usersData?.data?.totalElements || 0}
+					rowsPerPage={rowsPerPage}
+					page={page}
+					onPageChange={handleChangePage}
+					onRowsPerPageChange={handleChangeRowsPerPage}
+				/>
 			</Box>
 		</>
 	);

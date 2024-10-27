@@ -88,7 +88,7 @@ export const apiCaller = createApi({
 			query: (book) => ({
 				url: `/books/update-book/${book.id}`,
 				method: 'PUT',
-				body: book
+				body: book.book
 			})
 		}),
 		deleteBook: builder.mutation({
@@ -231,6 +231,14 @@ export const apiCaller = createApi({
 				headers: REQUEST_HEADERS.jsonHeader()
 			})
 		}),
+		updateCart: builder.mutation({
+			query: (cart) => ({
+				url: `/carts/update-quantity`,
+				method: 'PUT',
+				body: cart,
+				headers: REQUEST_HEADERS.jsonHeader()
+			})
+		}),
 		deleteCart: builder.mutation({
 			query: (id) => ({
 				url: `/carts/delete?bookId=${id}`,
@@ -301,6 +309,7 @@ export const {
 	useDeleteCategoryMutation,
 	useGetAllCartsQuery,
 	useCreateCartMutation,
+	useUpdateCartMutation,
 	useDeleteCartMutation,
 	useCheckoutCartMutation,
 	usePaymentsMutation,

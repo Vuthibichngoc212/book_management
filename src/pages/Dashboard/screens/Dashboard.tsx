@@ -11,6 +11,7 @@ import {
 	Legend
 } from 'chart.js';
 import { useGetAllRevenueByMonthQuery, useGetAllTopBooksQuery } from '@/api/api.caller';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -25,6 +26,10 @@ const Dashboard = () => {
 		isLoading: isLoadingRevenue,
 		isError: isErrorRevenue
 	} = useGetAllRevenueByMonthQuery(undefined);
+
+	const topBooks = [...(topBooksData?.data || [])]
+		.sort((a: any, b: any) => b.totalBooksSold - a.totalBooksSold)
+		.slice(0, 5);
 
 	const lineChartData = {
 		labels: revenueData?.data.map((item: any) => `${item.month}/${item.year}`) || [],
@@ -149,7 +154,7 @@ const Dashboard = () => {
 
 				<Box sx={{ flex: 1, marginBottom: '30px', marginTop: '18px' }}>
 					<Typography sx={{ fontSize: '20px' }}>Top cuốn sách bán chạy nhất</Typography>
-					{topBooksData?.data.map((item: any, index: number) => (
+					{topBooks.map((item: any, index: number) => (
 						<Paper
 							key={item.bookID}
 							sx={{
@@ -167,16 +172,27 @@ const Dashboard = () => {
 								alt={item.title}
 								sx={{ width: 56, height: 56, marginRight: '15px' }}
 							/>
-							<Box sx={{ flexGrow: 1 }}>
-								<Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-									#{index + 1} {item.title}
-								</Typography>
-								<Typography variant="body2" color="textSecondary">
-									{item.author}
-								</Typography>
+							<Box sx={{ display: 'flex', alignItems: 'center', gap: '10px', flexGrow: 1 }}>
+								<Box sx={{ textAlign: 'center' }}>
+									<Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+										{String(index + 1).padStart(2, '0')}
+									</Typography>
+									<ArrowUpwardIcon sx={{ color: 'green', fontSize: '18px' }} />
+								</Box>
+								<Box sx={{ flexGrow: 1 }}>
+									<Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+										{item.title}
+									</Typography>
+									<Typography variant="body2" color="textSecondary">
+										{item.author}
+									</Typography>
+								</Box>
 							</Box>
-							<Box>
-								<Typography variant="subtitle1">{item.totalBooksSold} orders</Typography>
+
+							<Box sx={{ textAlign: 'right' }}>
+								<Typography variant="subtitle1" sx={{ whiteSpace: 'nowrap' }}>
+									{item.totalBooksSold} đơn
+								</Typography>
 							</Box>
 						</Paper>
 					))}

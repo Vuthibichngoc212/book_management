@@ -1,7 +1,7 @@
 import { FormProvider, useForm } from 'react-hook-form';
 import { Box, Grid, Typography } from '@mui/material';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
 import CRUDModal from '@/components/common/CRUDModal/CRUDModal';
@@ -14,10 +14,7 @@ import {
 	useGetAllCategoriesQuery,
 	useUpdateBookMutation
 } from '@/api/api.caller';
-import {
-	CustomSelectField,
-	SelectOption
-} from '@/components/common/FormElements/CustomSelectField/CustomSelectField';
+import { CustomSelectField } from '@/components/common/FormElements/CustomSelectField/CustomSelectField';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import dayjs from 'dayjs';
@@ -41,49 +38,90 @@ const FormModal = ({
 	const [createBook] = useCreateBookMutation();
 	const [updateBook] = useUpdateBookMutation();
 	const { data: categoriesData } = useGetAllCategoriesQuery(undefined);
-	const { data: booksData, refetch } = useGetAllBooksQuery(undefined);
+	const { refetch } = useGetAllBooksQuery(undefined);
 
+	const categoryOptions = useMemo(() => {
+		return (
+			categoriesData?.data?.elements.map((category: any) => ({
+				label: category.categoryName,
+				value: category.id
+			})) || []
+		);
+	}, [categoriesData]);
+
+	// useEffect(() => {
+	// 	if (isOpenModal) {
+	// 		if (editRole) {
+	// 			// console.log('editRole.image:', editRole.image);
+
+	// 			if (!selectedImage && editRole.image) {
+	// 				setImagePreview(editRole.image);
+	// 			}
+
+	// 			const selectedCategory = categoryOptions.find(
+	// 				(option: any) => option.label === editRole.categoryName
+	// 			);
+	// 			methods.setValue('categoryID', selectedCategory?.value || '');
+	// 			methods.setValue('title', editRole.title || '');
+	// 			// methods.setValue('image', editRole.image || '');
+	// 			methods.setValue('author', editRole.author || '');
+	// 			methods.setValue('price', editRole.price || 0);
+	// 			methods.setValue('quantity', editRole.quantity || 0);
+	// 			const parsedDate = editRole.publishedDate ? dayjs(editRole.publishedDate) : null;
+	// 			methods.setValue('publishedDate', parsedDate);
+	// 			methods.setValue('publisher', editRole.publisher || '');
+	// 			methods.setValue('description', editRole.description || '');
+	// 		} else {
+	// 			methods.reset({
+	// 				title: '',
+	// 				author: '',
+	// 				price: 0,
+	// 				categoryID: 0,
+	// 				quantity: 0,
+	// 				publishedDate: null,
+	// 				publisher: '',
+	// 				description: ''
+	// 			});
+	// 		}
+	// 		setSelectedImage(null);
+	// 		setImagePreview(null);
+	// 	}
+	// }, [isOpenModal, editRole, methods, categoryOptions]);
 	useEffect(() => {
-		console.log('Books data after refetch:', booksData);
-	}, [booksData]);
-
-	const categoryOptions: SelectOption[] =
-		categoriesData?.data?.elements.map((category: any) => ({
-			label: category.categoryName,
-			value: category.id
-		})) || [];
-
-	useEffect(() => {
-		if (isOpenModal) {
-			if (editRole) {
-				console.log('editRole:', editRole);
-
-				const parsedDate = editRole.publishedDate ? dayjs(editRole.publishedDate) : null;
-
-				methods.setValue('title', editRole.title || '');
-				methods.setValue('author', editRole.author || '');
-				methods.setValue('price', editRole.price || 0);
-				methods.setValue('categoryName', editRole.categoryName || 0);
-				methods.setValue('quantity', editRole.quantity || 0);
-				methods.setValue('publishedDate', parsedDate);
-				methods.setValue('publisher', editRole.publisher || '');
-				methods.setValue('description', editRole.description || '');
-			} else {
-				methods.reset({
-					title: '',
-					author: '',
-					price: 0,
-					categoryName: '',
-					quantity: 0,
-					publishedDate: null,
-					publisher: '',
-					description: ''
-				});
+		if (isOpenModal && editRole) {
+			if (!selectedImage && editRole.image) {
+				console.log('Setting image preview from editRole.image:', editRole.image);
+				setImagePreview(editRole.image);
 			}
+
+			// Thiết lập giá trị cho các trường khác
+			const selectedCategory = categoryOptions.find(
+				(option: any) => option.label === editRole.categoryName
+			);
+			methods.setValue('categoryID', selectedCategory?.value || '');
+			methods.setValue('title', editRole.title || '');
+			methods.setValue('author', editRole.author || '');
+			methods.setValue('price', editRole.price || 0);
+			methods.setValue('quantity', editRole.quantity || 0);
+			const parsedDate = editRole.publishedDate ? dayjs(editRole.publishedDate) : null;
+			methods.setValue('publishedDate', parsedDate);
+			methods.setValue('publisher', editRole.publisher || '');
+			methods.setValue('description', editRole.description || '');
+		} else if (isOpenModal) {
+			methods.reset({
+				title: '',
+				author: '',
+				price: 0,
+				categoryID: 0,
+				quantity: 0,
+				publishedDate: null,
+				publisher: '',
+				description: ''
+			});
 			setSelectedImage(null);
 			setImagePreview(null);
 		}
-	}, [isOpenModal, editRole, methods]);
+	}, [isOpenModal, editRole, selectedImage, categoryOptions]);
 
 	const handleSubmitForm = async (data: any) => {
 		const formData = new FormData();
@@ -103,10 +141,8 @@ const FormModal = ({
 
 		if (selectedImage) {
 			formData.append('image', selectedImage);
-		}
-
-		for (const pair of formData.entries()) {
-			console.log(`${pair[0]}, ${pair[1]}`);
+		} else if (editRole?.image) {
+			formData.append('image', editRole.image);
 		}
 
 		try {
@@ -125,7 +161,6 @@ const FormModal = ({
 					position: 'bottom-right'
 				});
 			}
-
 			refetch();
 			methods.reset({});
 			setSelectedImage(null);
@@ -240,10 +275,10 @@ const FormModal = ({
 									<Grid item xs={6}>
 										<CustomSelectField
 											label="Thể loại"
-											name="categoryName"
+											name="categoryID"
 											control={methods.control}
 											options={categoryOptions}
-											defaultValue={methods.watch('categoryName') || ''}
+											defaultValue={methods.watch('categoryID') || 0}
 											// required
 										/>
 									</Grid>

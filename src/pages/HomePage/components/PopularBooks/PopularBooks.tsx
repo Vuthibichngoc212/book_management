@@ -8,20 +8,34 @@ import {
 	Divider,
 	Grid,
 	Rating,
-	Button
+	Button,
+	CircularProgress
 } from '@mui/material';
 import BadgeOutlinedIcon from '@mui/icons-material/BadgeOutlined';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import { useGetAllBooksQuery } from '@/api/api.caller';
 import { useNavigate } from 'react-router-dom';
+import NoDataCommon from '@/components/common/NoDataCommon/NoDataCommon';
 
 const PopularBooks = () => {
 	const navigate = useNavigate();
 	const { data: booksData, isLoading, isError } = useGetAllBooksQuery(undefined);
 	const [showMore, setShowMore] = useState(false);
 
-	if (isLoading) return <Typography>Loading...</Typography>;
-	if (isError) return <Typography>Error loading books</Typography>;
+	if (isLoading)
+		return (
+			<Box
+				sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}
+			>
+				<CircularProgress />
+			</Box>
+		);
+	if (isError)
+		return (
+			<Box>
+				<NoDataCommon />
+			</Box>
+		);
 
 	const books = booksData?.data?.elements || [];
 
@@ -48,7 +62,7 @@ const PopularBooks = () => {
 						paddingBottom: '10px'
 					}}
 				>
-					Các cuốn sách bán chạy
+					Gợi ý hôm nay
 				</Typography>
 				<Box
 					sx={{
@@ -73,7 +87,8 @@ const PopularBooks = () => {
 									position: 'relative',
 									height: '100%',
 									boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.05)',
-									borderRadius: '8px'
+									borderRadius: '8px',
+									cursor: 'pointer'
 								}}
 							>
 								<CardMedia
@@ -81,7 +96,7 @@ const PopularBooks = () => {
 									alt={book.title}
 									height="140"
 									image={book.image}
-									sx={{ objectFit: 'fill' }}
+									sx={{ objectFit: 'contain' }}
 								/>
 								<CardContent>
 									<Typography
@@ -100,7 +115,7 @@ const PopularBooks = () => {
 												marginBottom: '8px'
 											}}
 										/>{' '}
-										{book.publisher}
+										{book.author}
 									</Typography>
 									<Typography
 										gutterBottom
@@ -168,6 +183,7 @@ const PopularBooks = () => {
 							variant="contained"
 							onClick={handleShowMore}
 							sx={{
+								marginBottom: '16px',
 								textTransform: 'none',
 								borderRadius: '8px',
 								backgroundColor: '#E76F51',

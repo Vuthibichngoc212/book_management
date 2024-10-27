@@ -4,13 +4,13 @@ export interface IBooks {
 	author: string;
 	price: number;
 	quantity: number;
-	categoryName: string;
+	categoryID: number;
 	description: string;
 	publisher: string;
-	publishedDate: Date | null;
+	publishedDate: Date;
 	image: string;
-	averageRating: number;
-	purchaseCount: number;
+	averageRating?: number;
+	purchaseCount?: number;
 }
 
 export interface IBooksResponse {

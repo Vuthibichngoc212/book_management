@@ -66,11 +66,11 @@ const BookDetail = () => {
 	};
 
 	useEffect(() => {
-		console.log(commnets); // Log the fetched comments data
+		console.log(commnets);
 	}, [commnets]);
 	useEffect(() => {
 		if (!isOpenModal) {
-			refetch(); // Gọi refetch để cập nhật comments sau khi modal đóng
+			refetch();
 		}
 	}, [isOpenModal]);
 

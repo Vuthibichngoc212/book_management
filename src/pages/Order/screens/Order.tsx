@@ -14,7 +14,8 @@ import {
 	MenuItem,
 	Button,
 	IconButton,
-	Tooltip
+	Tooltip,
+	TablePagination
 } from '@mui/material';
 import { useState } from 'react';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -23,12 +24,16 @@ import 'react-toastify/dist/ReactToastify.css';
 import moreIcon from '@/assets/icon/more-icon.svg';
 import FormModal from '../components/FormModal/FormModal';
 import DialogCancel from '../components/DialogCancel/DialogCancel';
+import NoDataCommon from '@/components/common/NoDataCommon/NoDataCommon';
 
 const Order = () => {
 	const [isOpenModal, setIsOpenModal] = useState(false);
 	const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
+
+	const [page, setPage] = useState(0);
+	const [rowsPerPage, setRowsPerPage] = useState(10);
 
 	const { data: ordersData, isLoading, error, refetch } = useGetAllOrdersQuery(undefined);
 	const orders = ordersData?.data?.elements || [];
@@ -80,6 +85,15 @@ const Order = () => {
 		}
 	};
 
+	const handleChangePage = (event: any, newPage: any) => {
+		setPage(newPage);
+	};
+
+	const handleChangeRowsPerPage = (event: any) => {
+		setRowsPerPage(parseInt(event.target.value, 10));
+		setPage(0);
+	};
+
 	if (isLoading) {
 		return (
 			<Box
@@ -91,7 +105,11 @@ const Order = () => {
 	}
 
 	if (error) {
-		return <Typography color="error">Có lỗi xảy ra khi lấy danh sách đơn hàng.</Typography>;
+		return (
+			<Box>
+				<NoDataCommon />
+			</Box>
+		);
 	}
 
 	const getStatusStyle = (status: string) => {
@@ -116,7 +134,7 @@ const Order = () => {
 				<TableContainer
 					component={Paper}
 					elevation={3}
-					sx={{ maxWidth: '100%', marginTop: '16px' }}
+					sx={{ maxWidth: '100%', marginTop: '16px', height: '400px', overflow: 'auto' }}
 				>
 					<Table>
 						<TableHead>
@@ -132,76 +150,84 @@ const Order = () => {
 							</TableRow>
 						</TableHead>
 						<TableBody>
-							{orders.map((order: any, index: number) => (
-								<TableRow
-									key={order.id}
-									sx={{ backgroundColor: order.id % 2 === 0 ? '#F7F7F8' : 'white' }}
-								>
-									<TableCell>{index + 1}</TableCell>
-									<TableCell>{order.customerName}</TableCell>
-									<TableCell>{order.email}</TableCell>
-									<TableCell>{order.orderDate}</TableCell>
-									<TableCell>{order.totalAmount.toFixed(2)}</TableCell>
-									<TableCell>{order.note}</TableCell>
-									<TableCell>
-										{order.status === 'Pending' ? (
-											<Button
-												variant="outlined"
-												size="small"
-												onClick={(e) => handleStatusClick(e, order.id)}
-												sx={{
-													color: '#ef6c00',
-													borderRadius: '8px',
-													border: 'none',
-													backgroundColor: '#fff3e0',
-													textTransform: 'none',
-													'&:hover': {
-														backgroundColor: '#fff3e0',
+							{orders
+								.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+								.map((order: any, index: number) => (
+									<TableRow
+										key={order.id}
+										sx={{ backgroundColor: order.id % 2 === 0 ? '#F7F7F8' : 'white' }}
+									>
+										<TableCell>{index + 1 + page * rowsPerPage}</TableCell>
+										<TableCell>{order.customerName}</TableCell>
+										<TableCell>{order.email}</TableCell>
+										<TableCell>{order.orderDate}</TableCell>
+										<TableCell>{order.totalAmount.toFixed(2)}</TableCell>
+										<TableCell>{order.note}</TableCell>
+										<TableCell>
+											{order.status === 'Pending' ? (
+												<Button
+													variant="outlined"
+													size="small"
+													onClick={(e) => handleStatusClick(e, order.id)}
+													sx={{
 														color: '#ef6c00',
-														border: 'none'
-													}
-												}}
-											>
-												Đang chờ
-												<ExpandMoreIcon sx={{ marginLeft: '4px', width: '20px', height: '20px' }} />
-											</Button>
-										) : (
-											<Typography
-												variant="body2"
-												sx={{
-													padding: '4px 8px',
-													borderRadius: '8px',
-													backgroundColor: getStatusStyle(order.status).backgroundColor,
-													color: getStatusStyle(order.status).color,
-													textAlign: 'center',
-													display: 'inline-block',
-													cursor: 'pointer'
-												}}
-											>
-												{order.status}
-											</Typography>
-										)}
+														borderRadius: '8px',
+														border: 'none',
+														backgroundColor: '#fff3e0',
+														textTransform: 'none',
+														'&:hover': {
+															backgroundColor: '#fff3e0',
+															color: '#ef6c00',
+															border: 'none'
+														}
+													}}
+												>
+													Đang chờ
+													<ExpandMoreIcon
+														sx={{ marginLeft: '4px', width: '20px', height: '20px' }}
+													/>
+												</Button>
+											) : (
+												<Typography
+													variant="body2"
+													sx={{
+														padding: '4px 8px',
+														borderRadius: '8px',
+														backgroundColor: getStatusStyle(order.status).backgroundColor,
+														color: getStatusStyle(order.status).color,
+														textAlign: 'center',
+														display: 'inline-block',
+														cursor: 'pointer'
+													}}
+												>
+													{order.status}
+												</Typography>
+											)}
 
-										<Menu
-											anchorEl={anchorEl}
-											open={Boolean(anchorEl) && selectedOrderId === order.id}
-											onClose={handleClose}
-											anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-											transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-										>
-											<MenuItem onClick={() => handleStatusChange('Completed')}>Xác nhận</MenuItem>
-											<MenuItem onClick={() => handleOpenCancelDialog(order.id)}>Từ chối</MenuItem>
-										</Menu>
-									</TableCell>
-									<TableCell>
-										<Tooltip title="Xem chi tiết đơn hàng">
-											<IconButton color="primary" onClick={() => handleOpenModal(order.id)}>
-												<img alt="Xem chi tiết" src={moreIcon} />
-											</IconButton>
-										</Tooltip>
-									</TableCell>
-								</TableRow>
-							))}
+											<Menu
+												anchorEl={anchorEl}
+												open={Boolean(anchorEl) && selectedOrderId === order.id}
+												onClose={handleClose}
+												anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+												transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+											>
+												<MenuItem onClick={() => handleStatusChange('Completed')}>
+													Xác nhận
+												</MenuItem>
+												<MenuItem onClick={() => handleOpenCancelDialog(order.id)}>
+													Từ chối
+												</MenuItem>
+											</Menu>
+										</TableCell>
+										<TableCell>
+											<Tooltip title="Xem chi tiết đơn hàng">
+												<IconButton color="primary" onClick={() => handleOpenModal(order.id)}>
+													<img alt="Xem chi tiết" src={moreIcon} />
+												</IconButton>
+											</Tooltip>
+										</TableCell>
+									</TableRow>
+								))}
 						</TableBody>
 					</Table>
 				</TableContainer>
@@ -219,6 +245,18 @@ const Order = () => {
 				onClose={handleCloseCancelDialog}
 				orderId={selectedOrderId}
 			/>
+
+			<Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: '16px' }}>
+				<TablePagination
+					rowsPerPageOptions={[10, 25, 50]}
+					component="div"
+					count={orders.length}
+					rowsPerPage={rowsPerPage}
+					page={page}
+					onPageChange={handleChangePage}
+					onRowsPerPageChange={handleChangeRowsPerPage}
+				/>
+			</Box>
 		</>
 	);
 };

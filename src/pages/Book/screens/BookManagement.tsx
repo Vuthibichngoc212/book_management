@@ -11,7 +11,8 @@ import {
 	IconButton,
 	Button,
 	Tooltip,
-	CircularProgress
+	CircularProgress,
+	TablePagination
 } from '@mui/material';
 import { Edit, Delete, Add } from '@mui/icons-material';
 import { useDeleteBookMutation, useGetAllBooksQuery } from '@/api/api.caller';
@@ -26,11 +27,23 @@ const BookManagement = () => {
 	const [isOpenModal, setIsOpenModal] = useState(false);
 	const [editRole, setEditRole] = useState(null);
 
+	const [page, setPage] = useState(0);
+	const [rowsPerPage, setRowsPerPage] = useState(10);
+
 	const { data: booksData, isLoading, error, refetch } = useGetAllBooksQuery(undefined);
 
 	const [deleteBook] = useDeleteBookMutation();
 
 	const books = booksData?.data?.elements || [];
+
+	const handleChangePage = (event: any, newPage: any) => {
+		setPage(newPage);
+	};
+
+	const handleChangeRowsPerPage = (event: any) => {
+		setRowsPerPage(parseInt(event.target.value, 10));
+		setPage(0);
+	};
 
 	if (isLoading) {
 		return (
@@ -80,7 +93,7 @@ const BookManagement = () => {
 		<>
 			<ToastContainer />
 			<Box>
-				<Box sx={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 2 }}>
+				<Box sx={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 2, marginRight: 4 }}>
 					<Button
 						startIcon={<Add />}
 						onClick={() => handleOpenModal()}
@@ -98,7 +111,16 @@ const BookManagement = () => {
 					</Button>
 				</Box>
 
-				<TableContainer component={Paper} elevation={3} sx={{ maxWidth: '100%', marginTop: 2 }}>
+				<TableContainer
+					component={Paper}
+					elevation={3}
+					sx={{
+						maxWidth: '100%',
+						marginTop: 2,
+						height: '400px',
+						overflowY: 'auto'
+					}}
+				>
 					<Table>
 						<TableHead>
 							<TableRow sx={{ backgroundColor: '#EBF3FF' }}>
@@ -116,54 +138,55 @@ const BookManagement = () => {
 							</TableRow>
 						</TableHead>
 						<TableBody>
-							{books.map((book: any, index: number) => (
-								<TableRow
-									key={book.id}
-									sx={{ backgroundColor: book.id % 2 === 0 ? '#F7F7F8' : 'white' }}
-								>
-									<TableCell>{index + 1}</TableCell>
-									<TableCell>
-										<Box
-											component="img"
-											src={book.image}
-											alt={book.title}
-											sx={{
-												width: '50px',
-												height: '50px',
-												objectFit: 'cover',
-												borderRadius: '4px'
-											}}
-										/>
-									</TableCell>
-									{/* <TableCell>{book.title}</TableCell> */}
-									<TableCell>
-										<Tooltip title={book.title} arrow placement="top">
-											<Typography>{truncateText(book.title, MAX_LENGTH)}</Typography>
-										</Tooltip>
-									</TableCell>
-									<TableCell>{book.author}</TableCell>
-									<TableCell>{book.categoryName}</TableCell>
-									<TableCell>{book.publisher}</TableCell>
-									<TableCell>{new Date(book.publishedDate).getFullYear()}</TableCell>
-									<TableCell>{book.price.toFixed(2)}</TableCell>
-									<TableCell>{book.quantity}</TableCell>
-									<TableCell>
-										<Tooltip title={book.description} arrow placement="top">
-											<Typography>{truncateText(book.description, MAX_LENGTH)}</Typography>
-										</Tooltip>
-									</TableCell>
-									<TableCell>
-										<Box sx={{ display: 'flex' }}>
-											<IconButton color="primary" onClick={() => handleOpenModal(book)}>
-												<Edit />
-											</IconButton>
-											<IconButton color="error" onClick={() => handleDeleteBook(book.id)}>
-												<Delete />
-											</IconButton>
-										</Box>
-									</TableCell>
-								</TableRow>
-							))}
+							{books
+								.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+								.map((book: any, index: number) => (
+									<TableRow
+										key={book.id}
+										sx={{ backgroundColor: book.id % 2 === 0 ? '#F7F7F8' : 'white' }}
+									>
+										<TableCell>{index + 1 + page * rowsPerPage}</TableCell>
+										<TableCell>
+											<Box
+												component="img"
+												src={book.image}
+												alt={book.title}
+												sx={{
+													width: '50px',
+													height: '50px',
+													objectFit: 'cover',
+													borderRadius: '4px'
+												}}
+											/>
+										</TableCell>
+										<TableCell>
+											<Tooltip title={book.title} arrow placement="top">
+												<Typography>{truncateText(book.title, MAX_LENGTH)}</Typography>
+											</Tooltip>
+										</TableCell>
+										<TableCell>{book.author}</TableCell>
+										<TableCell>{book.categoryName}</TableCell>
+										<TableCell>{book.publisher}</TableCell>
+										<TableCell>{new Date(book.publishedDate).getFullYear()}</TableCell>
+										<TableCell>{book.price.toFixed(2)}</TableCell>
+										<TableCell>{book.quantity}</TableCell>
+										<TableCell>
+											<Tooltip title={book.description} arrow placement="top">
+												<Typography>{truncateText(book.description, MAX_LENGTH)}</Typography>
+											</Tooltip>
+										</TableCell>
+										<TableCell>
+											<Box sx={{ display: 'flex' }}>
+												<IconButton color="primary" onClick={() => handleOpenModal(book)}>
+													<Edit />
+												</IconButton>
+												<IconButton color="error" onClick={() => handleDeleteBook(book.id)}>
+													<Delete />
+												</IconButton>
+											</Box>
+										</TableCell>
+									</TableRow>
+								))}
 						</TableBody>
 					</Table>
 				</TableContainer>
@@ -177,6 +200,18 @@ const BookManagement = () => {
 				submitButtonLabel={editRole ? 'Cập nhật' : 'Thêm'}
 				editRole={editRole}
 			/>
+
+			<Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: '16px' }}>
+				<TablePagination
+					rowsPerPageOptions={[10, 25, 50]}
+					component="div"
+					count={books.length}
+					rowsPerPage={rowsPerPage}
+					page={page}
+					onPageChange={handleChangePage}
+					onRowsPerPageChange={handleChangeRowsPerPage}
+				/>
+			</Box>
 		</>
 	);
 };

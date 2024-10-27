@@ -9,7 +9,7 @@ import category from '@/assets/icon/category.svg?react';
 
 export const sidebarRoutes = [
 	{
-		path: ROUTE_PATH.ROOT.INDEX,
+		path: ROUTE_PATH.HOME.INDEX,
 		name: 'Tổng quan',
 		label: 'Dashboard',
 		icon: overview,

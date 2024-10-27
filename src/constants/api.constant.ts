@@ -34,11 +34,20 @@ export const REQUEST_HEADERS = {
 		// 'X-Timezone': systemTimezone
 	}),
 	fileHeader: () => ({
-		'Content-Type': 'multipart/form-data',
-		'X-Timezone': systemTimezone
+		'Content-Type': 'multipart/form-data'
 	}),
 	scmHeader: () => ({
 		'Content-Type': 'application/json; charset=UTF-8',
 		'X-Timezone': systemTimezone
 	})
 };
+
+// useEffect(() => {
+// 	if (isOpenModal && editRole) {
+// 		if (editRole.image) {
+// 			setImagePreview(editRole.image);
+// 		} else {
+// 			setImagePreview(null);
+// 		}
+// 	}
+// }, [isOpenModal, editRole, categoryOptions, methods]);
