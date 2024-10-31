@@ -87,7 +87,7 @@ const HeaderAdmin = () => {
 									onClick={() => {
 										if (setting.label === 'Đăng xuất') {
 											localStorage.removeItem('adminToken');
-											navigate('/');
+											navigate('/login');
 										} else if (setting.path) {
 											navigate(setting.path);
 										}

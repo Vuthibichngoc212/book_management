@@ -56,7 +56,7 @@ const Login = ({ onToggleForm, onForgotPassword }: any) => {
 					if (data.username.toLowerCase().startsWith('admin')) {
 						navigate('/dashboard');
 					} else {
-						navigate('/home');
+						navigate('/');
 					}
 				}, 1000);
 			} else {

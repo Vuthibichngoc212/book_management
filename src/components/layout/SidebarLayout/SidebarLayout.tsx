@@ -131,7 +131,7 @@ const SideBar = () => {
 				}}
 			>
 				<DrawerHeader>
-					<Box onClick={handleDrawer}>
+					<Box onClick={handleDrawer} sx={{ cursor: 'pointer' }}>
 						<img src={logo} alt="logo" />
 					</Box>
 				</DrawerHeader>

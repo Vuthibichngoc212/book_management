@@ -47,14 +47,14 @@ const Dialog: React.FC<DialogProps> = ({ open, title, message, onClose }) => {
 						{message}{' '}
 						<Link
 							sx={{ color: '#1e88e5', cursor: 'pointer', textDecoration: 'none' }}
-							onClick={() => handleNavigate('/')}
+							onClick={() => handleNavigate('/login')}
 						>
 							Đăng nhập
 						</Link>{' '}
 						hoặc{' '}
 						<Link
 							sx={{ color: '#1e88e5', cursor: 'pointer', textDecoration: 'none' }}
-							onClick={() => handleNavigate('/')}
+							onClick={() => handleNavigate('/login')}
 						>
 							Đăng ký
 						</Link>{' '}

@@ -37,7 +37,6 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useAppDispatch } from '@/redux/store';
 import { addToCart } from '@/redux/slices/cart.slice';
-// import EditIcon from '@mui/icons-material/Edit';
 import FormModal from '../FormModal/FormModal';
 import Comments from './components/Comments/Comments';
 
@@ -92,19 +91,28 @@ const BookDetail = () => {
 	const book = bookData.data;
 	const enableComment = commnets?.enableComment || false;
 
-	const handleIncreaseQuantity = () => setQuantity((prev: any) => prev + 1);
-	const handleDecreaseQuantity = () => setQuantity((prev: any) => Math.max(1, prev - 1));
-
 	const handleOpenDialog = () => setOpenDialog(true);
 	const handleCloseDialog = () => setOpenDialog(false);
 
+	const handleIncreaseQuantity = () => setQuantity((prev: any) => prev + 1);
+	const handleDecreaseQuantity = () => setQuantity((prev: any) => Math.max(1, prev - 1));
+
 	const handleAddToCart = async (bookId: number, quantity: number, navigateToCart = false) => {
+		if (bookData.data.quantity === 0) {
+			toast.warning('Sản phẩm đã hết', {
+				theme: 'colored',
+				autoClose: 2000,
+				position: 'bottom-right'
+			});
+			return;
+		}
+
 		const userToken = localStorage.getItem('userToken');
 
 		if (userToken) {
 			try {
 				const payload = {
-					bookId: book.id,
+					bookId: bookId,
 					newQuantity: quantity
 				};
 				await createCart(payload).unwrap();
@@ -119,12 +127,20 @@ const BookDetail = () => {
 				if (navigateToCart) {
 					navigate('/carts');
 				}
-			} catch (error) {
-				toast.error('Thêm sản phẩm vào giỏ hàng thất bại.', {
-					theme: 'colored',
-					autoClose: 2000,
-					position: 'bottom-right'
-				});
+			} catch (error: any) {
+				if (error?.data?.error === 'Not enough quantity') {
+					toast.error('Số lượng trong kho không đủ!', {
+						theme: 'colored',
+						autoClose: 2000,
+						position: 'bottom-right'
+					});
+				} else {
+					toast.error('Thêm sản phẩm vào giỏ hàng thất bại', {
+						theme: 'colored',
+						autoClose: 2000,
+						position: 'bottom-right'
+					});
+				}
 			}
 		} else {
 			handleOpenDialog();

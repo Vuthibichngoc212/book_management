@@ -9,7 +9,6 @@ import {
 	TableContainer,
 	TableHead,
 	TableRow,
-	Typography,
 	Button,
 	IconButton,
 	CircularProgress,
@@ -20,6 +19,7 @@ import { useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import DeletePopUp from '@/components/common/DeletePopUp/DeletePopUp';
+import NoDataCommon from '@/components/common/NoDataCommon/NoDataCommon';
 
 const Categories = () => {
 	const [isOpenModal, setIsOpenModal] = useState(false);
@@ -65,7 +65,11 @@ const Categories = () => {
 	}
 
 	if (error) {
-		return <Typography color="error">Có lỗi xảy ra khi lấy danh sách khách hàng</Typography>;
+		return (
+			<Box>
+				<NoDataCommon />
+			</Box>
+		);
 	}
 
 	const handleAfterSubmit = () => {

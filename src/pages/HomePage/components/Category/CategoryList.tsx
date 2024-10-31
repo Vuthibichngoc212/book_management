@@ -14,6 +14,7 @@ import categoryAlt from '@/assets/image/category.webp';
 import { Navigation } from 'swiper/modules';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import NoDataCommon from '@/components/common/NoDataCommon/NoDataCommon';
 
 const CategoryList = () => {
 	const navigate = useNavigate();
@@ -58,7 +59,15 @@ const CategoryList = () => {
 				<CircularProgress />
 			</Box>
 		);
-	if (isError) return <Typography>Error loading categories</Typography>;
+
+	if (isError) {
+		return (
+			<Box>
+				<Typography>Danh mục sản phẩm</Typography>
+				<NoDataCommon />
+			</Box>
+		);
+	}
 
 	const categories = categoriesData?.data?.elements || [];
 

@@ -10,8 +10,15 @@ import {
 	Tooltip,
 	Legend
 } from 'chart.js';
-import { useGetAllRevenueByMonthQuery, useGetAllTopBooksQuery } from '@/api/api.caller';
+import {
+	useGetAllRevenueByMonthQuery,
+	useGetAllTopBooksQuery,
+	useGetTotalCustomersQuery,
+	useGetTotalOrdersQuery,
+	useGetTotalRevenueQuery
+} from '@/api/api.caller';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import NoDataCommon from '@/components/common/NoDataCommon/NoDataCommon';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -26,6 +33,10 @@ const Dashboard = () => {
 		isLoading: isLoadingRevenue,
 		isError: isErrorRevenue
 	} = useGetAllRevenueByMonthQuery(undefined);
+
+	const { data: topRevenue } = useGetTotalRevenueQuery(undefined);
+	const { data: topCustomers } = useGetTotalCustomersQuery(undefined);
+	const { data: topOrders } = useGetTotalOrdersQuery(undefined);
 
 	const topBooks = [...(topBooksData?.data || [])]
 		.sort((a: any, b: any) => b.totalBooksSold - a.totalBooksSold)
@@ -54,7 +65,11 @@ const Dashboard = () => {
 	}
 
 	if (isErrorBooks || isErrorRevenue || !revenueData || !topBooksData) {
-		return 'Không có dữ liệu';
+		return (
+			<Box>
+				<NoDataCommon />
+			</Box>
+		);
 	}
 
 	return (
@@ -64,67 +79,58 @@ const Dashboard = () => {
 					elevation={3}
 					sx={{
 						padding: '16px',
-						flex: 1,
 						borderRadius: '8px',
 						display: 'flex',
-						flexDirection: 'column',
-						justifyContent: 'space-between'
+						alignItems: 'center',
+						gap: '16px'
 					}}
 				>
-					<Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-						<Avatar sx={{ backgroundColor: '#f5f5f5' }}>💲</Avatar>
+					<Avatar sx={{ backgroundColor: '#f5f5f5', width: '64px', height: '64px' }}>💲</Avatar>
+
+					<Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
 						<Typography variant="subtitle1">Total Revenue</Typography>
+						<Typography sx={{ marginTop: '8px', fontSize: '32px', fontWeight: '600' }}>
+							{topRevenue?.data}
+						</Typography>
 					</Box>
-					<Typography variant="h4" sx={{ marginTop: '10px' }}>
-						1200
-					</Typography>
-					<Typography variant="body2" color="textSecondary">
-						5% increase vs last month
-					</Typography>
 				</Paper>
 				<Paper
 					elevation={3}
 					sx={{
 						padding: '16px',
-						flex: 1,
 						borderRadius: '8px',
 						display: 'flex',
-						flexDirection: 'column',
-						justifyContent: 'space-between'
+						alignItems: 'center',
+						gap: '16px'
 					}}
 				>
-					<Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-						<Avatar sx={{ backgroundColor: '#f5f5f5' }}>👥</Avatar>
+					<Avatar sx={{ backgroundColor: '#f5f5f5', width: '64px', height: '64px' }}>👥</Avatar>
+
+					<Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
 						<Typography variant="subtitle1">Total Customers</Typography>
+						<Typography sx={{ marginTop: '8px', fontSize: '32px', fontWeight: '600' }}>
+							{topCustomers?.data}
+						</Typography>
 					</Box>
-					<Typography variant="h4" sx={{ marginTop: '10px' }}>
-						200
-					</Typography>
-					<Typography variant="body2" color="textSecondary">
-						5% increase vs last month
-					</Typography>
 				</Paper>
 				<Paper
 					elevation={3}
 					sx={{
 						padding: '16px',
-						flex: 1,
 						borderRadius: '8px',
 						display: 'flex',
-						flexDirection: 'column',
-						justifyContent: 'space-between'
+						alignItems: 'center',
+						gap: '16px'
 					}}
 				>
-					<Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-						<Avatar sx={{ backgroundColor: '#f5f5f5' }}>📦</Avatar>
+					<Avatar sx={{ backgroundColor: '#f5f5f5', width: '64px', height: '64px' }}>📦</Avatar>
+
+					<Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
 						<Typography variant="subtitle1">Total Orders</Typography>
+						<Typography sx={{ marginTop: '8px', fontSize: '32px', fontWeight: '600' }}>
+							{topOrders?.data}
+						</Typography>
 					</Box>
-					<Typography variant="h4" sx={{ marginTop: '10px' }}>
-						1000
-					</Typography>
-					<Typography variant="body2" color="textSecondary">
-						5% increase vs last month
-					</Typography>
 				</Paper>
 			</Box>
 

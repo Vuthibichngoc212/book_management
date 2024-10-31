@@ -2,18 +2,23 @@ import { useGetAllTopBooksQuery } from '@/api/api.caller';
 import NoDataCommon from '@/components/common/NoDataCommon/NoDataCommon';
 import { Box, CircularProgress, Grid, Paper, Typography } from '@mui/material';
 import BadgeOutlinedIcon from '@mui/icons-material/BadgeOutlined';
+import { useNavigate } from 'react-router-dom';
 
 const TopBook = () => {
+	const navigate = useNavigate();
 	const {
 		data: topBooksData,
 		isLoading: isLoadingBooks,
 		isError: isErrorBooks
 	} = useGetAllTopBooksQuery(undefined);
 
-	// Tạo bản sao của mảng và sắp xếp, sau đó lấy 5 sách có tổng số lượng bán lớn nhất
 	const topBooks = [...(topBooksData?.data || [])]
 		.sort((a: any, b: any) => b.totalBooksSold - a.totalBooksSold)
 		.slice(0, 5);
+
+	const handleBookClick = (bookId: number) => {
+		navigate(`/books/${bookId}`);
+	};
 
 	if (isLoadingBooks) {
 		return (
@@ -28,13 +33,14 @@ const TopBook = () => {
 	if (isErrorBooks || !topBooksData) {
 		return (
 			<Box>
+				<Typography>Top cuốn sách bán chạy</Typography>
 				<NoDataCommon />
 			</Box>
 		);
 	}
 
 	return (
-		<Box sx={{ margin: '0px 34px' }}>
+		<Box sx={{ margin: '0px 34px', cursor: 'pointer' }}>
 			<Box sx={{ position: 'relative', display: 'inline-block', margin: '48px 0px 8px 0px' }}>
 				<Typography
 					sx={{
@@ -62,8 +68,9 @@ const TopBook = () => {
 			<Box>
 				<Grid container spacing={3}>
 					{topBooks.map((book: any) => (
-						<Grid item xs={12} md={2.4} key={book.bookID}>
+						<Grid item xs={12} md={2.4} key={book.id}>
 							<Paper
+								onClick={() => handleBookClick(book.bookID)}
 								sx={{
 									padding: '8px',
 									borderRadius: '8px',

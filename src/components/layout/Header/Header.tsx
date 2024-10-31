@@ -53,7 +53,7 @@ const Header = () => {
 
 	const handleLogoutClick = () => {
 		localStorage.removeItem('userToken');
-		navigate('/');
+		navigate('/login');
 	};
 	const [openDialog, setOpenDialog] = useState(false);
 	const [searchOpen, setSearchOpen] = React.useState(false);
@@ -126,7 +126,7 @@ const Header = () => {
 						<MenuIcon />
 					</IconButton>
 				)}
-				<Box onClick={() => navigate('/home')} sx={{ cursor: 'pointer' }}>
+				<Box onClick={() => navigate('/')} sx={{ cursor: 'pointer' }}>
 					<img src={Logo} alt="logo" width="134px" height="50px" style={{ objectFit: 'contain' }} />
 					<Typography sx={{ color: 'black', fontWeight: 'bold', textAlign: 'center' }}>
 						Book Heaven
@@ -134,7 +134,7 @@ const Header = () => {
 				</Box>
 				{!isMobile && (
 					<>
-						<Button className={classes.listItemRoot} onClick={() => navigate('/home')}>
+						<Button className={classes.listItemRoot} onClick={() => navigate('/')}>
 							Trang chủ
 						</Button>
 						<Button className={classes.listItemRoot}>Sách của tôi</Button>

@@ -138,7 +138,7 @@ const Comments = ({
 										<Link
 											href=""
 											sx={{ color: '#1e88e5', textDecoration: 'none' }}
-											onClick={() => navigate('/')}
+											onClick={() => navigate('/login')}
 										>
 											đăng nhập
 										</Link>{' '}
@@ -146,7 +146,7 @@ const Comments = ({
 										<Link
 											href=""
 											sx={{ color: '#1e88e5', textDecoration: 'none' }}
-											onClick={() => navigate('/')}
+											onClick={() => navigate('/login')}
 										>
 											đăng ký
 										</Link>

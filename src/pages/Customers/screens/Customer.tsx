@@ -9,10 +9,10 @@ import {
 	TableContainer,
 	TableHead,
 	TableRow,
-	Typography,
 	CircularProgress,
 	TablePagination
 } from '@mui/material';
+import NoDataCommon from '@/components/common/NoDataCommon/NoDataCommon';
 
 const Customer = () => {
 	const [page, setPage] = useState(0);
@@ -41,7 +41,11 @@ const Customer = () => {
 	}
 
 	if (error) {
-		return <Typography color="error">Có lỗi xảy ra khi lấy danh sách khách hàng</Typography>;
+		return (
+			<Box>
+				<NoDataCommon />
+			</Box>
+		);
 	}
 
 	return (

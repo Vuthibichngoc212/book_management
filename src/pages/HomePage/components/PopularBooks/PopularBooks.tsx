@@ -33,6 +33,7 @@ const PopularBooks = () => {
 	if (isError)
 		return (
 			<Box>
+				<Typography>Gợi ý hôm nay</Typography>
 				<NoDataCommon />
 			</Box>
 		);

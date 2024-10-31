@@ -20,6 +20,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useState } from 'react';
 import FormModal from '../components/FormModal/FormModal';
+import NoDataCommon from '@/components/common/NoDataCommon/NoDataCommon';
 
 const MAX_LENGTH = 25;
 
@@ -56,7 +57,11 @@ const BookManagement = () => {
 	}
 
 	if (error) {
-		return <Typography color="error">Có lỗi xảy ra khi lấy danh sách sách.</Typography>;
+		return (
+			<Box>
+				<NoDataCommon />
+			</Box>
+		);
 	}
 
 	const truncateText = (text: string, length: number) => {

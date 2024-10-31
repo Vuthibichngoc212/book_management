@@ -187,6 +187,24 @@ export const apiCaller = createApi({
 				method: 'GET'
 			})
 		}),
+		getTotalCustomers: builder.query({
+			query: () => ({
+				url: `statistical/total-customers`,
+				method: 'GET'
+			})
+		}),
+		getTotalOrders: builder.query({
+			query: () => ({
+				url: `statistical/total-orders`,
+				method: 'GET'
+			})
+		}),
+		getTotalRevenue: builder.query({
+			query: () => ({
+				url: `statistical/total-revenue`,
+				method: 'GET'
+			})
+		}),
 		//category
 		getAllCategories: builder.query({
 			query: () => ({
@@ -303,6 +321,9 @@ export const {
 	// useGetExportUserQuery,
 	useGetAllTopBooksQuery,
 	useGetAllRevenueByMonthQuery,
+	useGetTotalCustomersQuery,
+	useGetTotalOrdersQuery,
+	useGetTotalRevenueQuery,
 	useGetAllCategoriesQuery,
 	useCreateCategoryMutation,
 	useUpdateCategoryMutation,
