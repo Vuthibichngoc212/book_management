@@ -16,7 +16,7 @@ import { Pagination, Navigation, Autoplay } from 'swiper/modules';
 
 const Banner = () => {
 	return (
-		<div className="banner">
+		<div className="banner" style={{ cursor: 'pointer' }}>
 			<Swiper
 				spaceBetween={50}
 				slidesPerView={1}

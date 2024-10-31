@@ -2,8 +2,6 @@ import { useState } from 'react';
 import {
 	Box,
 	Typography,
-	Tabs,
-	Tab,
 	Paper,
 	CircularProgress,
 	Table,
@@ -32,7 +30,6 @@ const OrderHistory = () => {
 	const [isOpenModal, setIsOpenModal] = useState(false);
 	const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
 
-	const [tabIndex, setTabIndex] = useState(0);
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
 
@@ -41,17 +38,7 @@ const OrderHistory = () => {
 
 	const [receivedOrder] = useReceivedOrderMutation();
 
-	const handleChangeTab = (newValue: any) => {
-		setTabIndex(newValue);
-	};
-
-	const filteredOrders = orders.filter((order: any) => {
-		if (tabIndex === 0) return true;
-		if (tabIndex === 1) return order.status === 'Chờ thanh toán';
-		if (tabIndex === 2) return order.status === 'Đang xử lý';
-		if (tabIndex === 3) return order.status === 'Đang vận chuyển';
-		if (tabIndex === 4) return order.status === 'Đã giao';
-		if (tabIndex === 5) return order.status === 'Đã hủy';
+	const filteredOrders = orders.filter(() => {
 		return true;
 	});
 
@@ -129,30 +116,6 @@ const OrderHistory = () => {
 				<Paper
 					elevation={3}
 					sx={{
-						borderRadius: '8px',
-						boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.05)'
-					}}
-				>
-					<Tabs
-						value={tabIndex}
-						onChange={handleChangeTab}
-						variant="fullWidth"
-						textColor="primary"
-						indicatorColor="primary"
-						sx={{ marginBottom: '16px' }}
-					>
-						<Tab label="Tất cả đơn" sx={{ textTransform: 'none', fontSize: '16px' }} />
-						<Tab label="Chờ thanh toán" sx={{ textTransform: 'none', fontSize: '16px' }} />
-						<Tab label="Đang xử lý" sx={{ textTransform: 'none', fontSize: '16px' }} />
-						<Tab label="Đang vận chuyển" sx={{ textTransform: 'none', fontSize: '16px' }} />
-						<Tab label="Đã giao" sx={{ textTransform: 'none', fontSize: '16px' }} />
-						<Tab label="Đã hủy" sx={{ textTransform: 'none', fontSize: '16px' }} />
-					</Tabs>
-				</Paper>
-
-				<Paper
-					elevation={3}
-					sx={{
 						padding: '16px',
 						borderRadius: '8px',
 						boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.05)',
@@ -193,8 +156,11 @@ const OrderHistory = () => {
 							</Typography>
 						</Box>
 					) : (
-						<TableContainer>
-							<Table>
+						<TableContainer
+							component={Paper}
+							sx={{ maxHeight: 'calc(100vh - 200px)', overflow: 'auto' }}
+						>
+							<Table stickyHeader>
 								<TableHead>
 									<TableRow>
 										<TableCell sx={{ fontWeight: 'bold' }}>Mã đơn hàng</TableCell>

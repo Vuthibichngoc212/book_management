@@ -3,7 +3,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
-import { useCancelOrderMutation } from '@/api/api.caller';
+import { useCancelOrderMutation, useGetAllOrdersUserQuery } from '@/api/api.caller';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useStyles } from './DialogCancel.styles';
@@ -17,6 +17,8 @@ const validationSchema = Yup.object().shape({
 const DialogCancel = ({ isOpen, onClose, orderId }: any) => {
 	const classes = useStyles();
 	const [cancelOrder] = useCancelOrderMutation();
+	const { refetch } = useGetAllOrdersUserQuery(undefined);
+
 	const methods = useForm({
 		resolver: yupResolver(validationSchema)
 	});
@@ -24,8 +26,6 @@ const DialogCancel = ({ isOpen, onClose, orderId }: any) => {
 	const { handleSubmit, reset } = methods;
 
 	const onSubmit = async (data: any) => {
-		console.log('data', data);
-
 		try {
 			await cancelOrder({ id: orderId, note: data.note }).unwrap();
 			toast.success('Đơn hàng đã bị hủy', {
@@ -33,6 +33,7 @@ const DialogCancel = ({ isOpen, onClose, orderId }: any) => {
 				autoClose: 2000,
 				position: 'bottom-right'
 			});
+			refetch();
 			onClose();
 			reset();
 		} catch (error) {

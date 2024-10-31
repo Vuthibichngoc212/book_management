@@ -146,6 +146,7 @@ function ProfileUser() {
 									value={formData.username}
 									onChange={handleInputChange}
 									margin="normal"
+									disabled
 								/>
 								<TextField
 									fullWidth
@@ -188,9 +189,9 @@ function ProfileUser() {
 										value={formData.nationality}
 										onChange={(e) => setFormData({ ...formData, nationality: e.target.value })}
 									>
-										<MenuItem value="Việt Nam">Việt Nam</MenuItem>
-										<MenuItem value="Mỹ">Mỹ</MenuItem>
-										<MenuItem value="Nhật Bản">Nhật Bản</MenuItem>
+										<MenuItem value="Việt Nam" disabled>
+											Việt Nam
+										</MenuItem>
 									</Select>
 								</FormControl>
 

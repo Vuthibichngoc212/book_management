@@ -9,7 +9,6 @@ import Customer from '@/pages/Customers/screens/Customer';
 import Categories from '@/pages/Categories/screens/Categories';
 import BookDetail from '@/pages/HomePage/components/PopularBooks/components/BookDetail/BookDetail';
 import Carts from '@/pages/Carts/screens/Carts';
-// import MyBooks from '@/pages/MyBooks/screens/MyBooks';
 import ProfileUser from '@/pages/ProfileUser/screens/ProfileUser';
 import CheckoutCart from '@/pages/HomePage/components/CheckoutCart/CheckoutCart';
 import OrderHistory from '@/pages/OrderHistory/screens/OrderHistory';
@@ -40,11 +39,6 @@ const routes = [
 		path: ROUTE_PATH.CARTS.INDEX,
 		element: <Carts />
 	},
-	// {
-	// 	label: 'My book',
-	// 	path: ROUTE_PATH.MYBOOKS.INDEX,
-	// 	element: <MyBooks />
-	// },
 	{
 		label: 'My profile',
 		path: ROUTE_PATH.PROFILE.INDEX,

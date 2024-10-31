@@ -19,9 +19,10 @@ import {
 	MenuItem
 } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const FilterBookSearch = () => {
+	const navigate = useNavigate();
 	const location = useLocation();
 	const [sortOrder, setSortOrder] = useState('');
 	const { books } = location.state || { books: [] };
@@ -64,6 +65,10 @@ const FilterBookSearch = () => {
 		skip: !selectedCategory && !selectedPublisher && !sortOrder && !priceRange
 	});
 
+	const handleBookClick = (bookId: number) => {
+		navigate(`/books/${bookId}`);
+	};
+
 	useEffect(() => {
 		if (booksData) {
 			setCurrentBooks(booksData.data.elements);
@@ -99,7 +104,8 @@ const FilterBookSearch = () => {
 						xs: '1fr',
 						sm: '220px 1fr'
 					},
-					gap: '24px'
+					gap: '24px',
+					cursor: 'pointer'
 				}}
 			>
 				<Paper
@@ -261,6 +267,7 @@ const FilterBookSearch = () => {
 						{currentBooks?.length > 0 ? (
 							currentBooks.map((book: any, index: any) => (
 								<Paper
+									onClick={() => handleBookClick(book.id)}
 									key={index}
 									sx={{
 										padding: '8px',
