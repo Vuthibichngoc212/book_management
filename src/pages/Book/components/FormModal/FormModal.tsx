@@ -49,44 +49,6 @@ const FormModal = ({
 		);
 	}, [categoriesData]);
 
-	// useEffect(() => {
-	// 	if (isOpenModal) {
-	// 		if (editRole) {
-	// 			// console.log('editRole.image:', editRole.image);
-
-	// 			if (!selectedImage && editRole.image) {
-	// 				setImagePreview(editRole.image);
-	// 			}
-
-	// 			const selectedCategory = categoryOptions.find(
-	// 				(option: any) => option.label === editRole.categoryName
-	// 			);
-	// 			methods.setValue('categoryID', selectedCategory?.value || '');
-	// 			methods.setValue('title', editRole.title || '');
-	// 			// methods.setValue('image', editRole.image || '');
-	// 			methods.setValue('author', editRole.author || '');
-	// 			methods.setValue('price', editRole.price || 0);
-	// 			methods.setValue('quantity', editRole.quantity || 0);
-	// 			const parsedDate = editRole.publishedDate ? dayjs(editRole.publishedDate) : null;
-	// 			methods.setValue('publishedDate', parsedDate);
-	// 			methods.setValue('publisher', editRole.publisher || '');
-	// 			methods.setValue('description', editRole.description || '');
-	// 		} else {
-	// 			methods.reset({
-	// 				title: '',
-	// 				author: '',
-	// 				price: 0,
-	// 				categoryID: 0,
-	// 				quantity: 0,
-	// 				publishedDate: null,
-	// 				publisher: '',
-	// 				description: ''
-	// 			});
-	// 		}
-	// 		setSelectedImage(null);
-	// 		setImagePreview(null);
-	// 	}
-	// }, [isOpenModal, editRole, methods, categoryOptions]);
 	useEffect(() => {
 		if (isOpenModal && editRole) {
 			if (!selectedImage && editRole.image) {
@@ -94,7 +56,6 @@ const FormModal = ({
 				setImagePreview(editRole.image);
 			}
 
-			// Thiết lập giá trị cho các trường khác
 			const selectedCategory = categoryOptions.find(
 				(option: any) => option.label === editRole.categoryName
 			);
@@ -126,7 +87,7 @@ const FormModal = ({
 	const handleSubmitForm = async (data: any) => {
 		const formData = new FormData();
 
-		if (!selectedImage) {
+		if (!editRole.image && !selectedImage) {
 			console.error('Hình ảnh không được để trống');
 			return;
 		}
@@ -141,8 +102,6 @@ const FormModal = ({
 
 		if (selectedImage) {
 			formData.append('image', selectedImage);
-		} else if (editRole?.image) {
-			formData.append('image', editRole.image);
 		}
 
 		try {
@@ -285,7 +244,7 @@ const FormModal = ({
 								</Grid>
 							</Grid>
 							<Grid container item spacing={2}>
-								<Grid item xs={6}>
+								<Grid item xs={4}>
 									<CustomTextField
 										label="Số lượng"
 										name="quantity"
@@ -295,7 +254,7 @@ const FormModal = ({
 									/>
 								</Grid>
 
-								<Grid item xs={6}>
+								<Grid item xs={4}>
 									<CustomDatePicker
 										label="Ngày xuất bản"
 										name="publishedDate"
@@ -306,7 +265,7 @@ const FormModal = ({
 										type="date"
 									/>
 								</Grid>
-								<Grid item xs={6}>
+								<Grid item xs={4}>
 									<CustomTextField
 										label="Nhà xuất bản"
 										name="publisher"

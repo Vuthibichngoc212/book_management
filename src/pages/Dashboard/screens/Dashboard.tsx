@@ -74,15 +74,19 @@ const Dashboard = () => {
 
 	return (
 		<Box sx={{ paddingTop: '10px' }}>
-			<Box sx={{ display: 'flex', gap: '20px', marginBottom: '20px' }}>
+			<Box
+				sx={{ display: 'flex', justifyContent: 'space-between', gap: '24px', marginBottom: '20px' }}
+			>
 				<Paper
 					elevation={3}
 					sx={{
+						flex: 1,
 						padding: '16px',
-						borderRadius: '8px',
+						borderRadius: '12px',
 						display: 'flex',
 						alignItems: 'center',
-						gap: '16px'
+						gap: '16px',
+						boxShadow: '0px 6px 12px rgba(0, 0, 0, 0.1)'
 					}}
 				>
 					<Avatar sx={{ backgroundColor: '#f5f5f5', width: '64px', height: '64px' }}>💲</Avatar>
@@ -97,11 +101,13 @@ const Dashboard = () => {
 				<Paper
 					elevation={3}
 					sx={{
+						flex: 1,
 						padding: '16px',
-						borderRadius: '8px',
+						borderRadius: '12px',
 						display: 'flex',
 						alignItems: 'center',
-						gap: '16px'
+						gap: '16px',
+						boxShadow: '0px 6px 12px rgba(0, 0, 0, 0.1)'
 					}}
 				>
 					<Avatar sx={{ backgroundColor: '#f5f5f5', width: '64px', height: '64px' }}>👥</Avatar>
@@ -116,11 +122,13 @@ const Dashboard = () => {
 				<Paper
 					elevation={3}
 					sx={{
+						flex: 1,
 						padding: '16px',
-						borderRadius: '8px',
+						borderRadius: '12px',
 						display: 'flex',
 						alignItems: 'center',
-						gap: '16px'
+						gap: '16px',
+						boxShadow: '0px 6px 12px rgba(0, 0, 0, 0.1)'
 					}}
 				>
 					<Avatar sx={{ backgroundColor: '#f5f5f5', width: '64px', height: '64px' }}>📦</Avatar>
@@ -176,7 +184,7 @@ const Dashboard = () => {
 							<Avatar
 								src={item.image}
 								alt={item.title}
-								sx={{ width: 56, height: 56, marginRight: '15px' }}
+								sx={{ width: 56, height: 56, marginRight: '15px', cursor: 'pointer' }}
 							/>
 							<Box sx={{ display: 'flex', alignItems: 'center', gap: '10px', flexGrow: 1 }}>
 								<Box sx={{ textAlign: 'center' }}>

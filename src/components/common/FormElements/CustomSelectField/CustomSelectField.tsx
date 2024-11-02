@@ -46,7 +46,7 @@ export function CustomSelectField({
 						<InputLabel
 							sx={{
 								mb: '0.4rem',
-								fontSize: '1.4rem',
+								fontSize: '1rem',
 								fontFamily: 'Inter',
 								color: '#19191A',
 								...(error && { color: 'red' })
