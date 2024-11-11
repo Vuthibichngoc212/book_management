@@ -123,7 +123,7 @@ const BookManagement = () => {
 						maxWidth: '100%',
 						marginTop: 2,
 						height: '400px',
-						overflowY: 'auto'
+						overflow: 'auto'
 					}}
 				>
 					<Table>

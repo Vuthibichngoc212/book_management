@@ -50,44 +50,44 @@ const FormModal = ({
 	}, [categoriesData]);
 
 	useEffect(() => {
-		if (isOpenModal && editRole) {
-			if (!selectedImage && editRole.image) {
-				console.log('Setting image preview from editRole.image:', editRole.image);
-				setImagePreview(editRole.image);
+		if (isOpenModal) {
+			if (editRole) {
+				if (!selectedImage && editRole.image) {
+					setImagePreview(editRole.image);
+				}
+				const selectedCategory = categoryOptions.find(
+					(option: any) => option.label === editRole.categoryName
+				);
+				methods.setValue('categoryID', selectedCategory?.value || '');
+				methods.setValue('title', editRole.title || '');
+				methods.setValue('author', editRole.author || '');
+				methods.setValue('price', editRole.price || 0);
+				methods.setValue('quantity', editRole.quantity || 0);
+				const parsedDate = editRole.publishedDate ? dayjs(editRole.publishedDate) : null;
+				methods.setValue('publishedDate', parsedDate);
+				methods.setValue('publisher', editRole.publisher || '');
+				methods.setValue('description', editRole.description || '');
+			} else {
+				methods.reset({
+					title: '',
+					author: '',
+					price: 0,
+					categoryID: 0,
+					quantity: 0,
+					publishedDate: null,
+					publisher: '',
+					description: ''
+				});
+				setSelectedImage(null);
+				setImagePreview(null);
 			}
-
-			const selectedCategory = categoryOptions.find(
-				(option: any) => option.label === editRole.categoryName
-			);
-			methods.setValue('categoryID', selectedCategory?.value || '');
-			methods.setValue('title', editRole.title || '');
-			methods.setValue('author', editRole.author || '');
-			methods.setValue('price', editRole.price || 0);
-			methods.setValue('quantity', editRole.quantity || 0);
-			const parsedDate = editRole.publishedDate ? dayjs(editRole.publishedDate) : null;
-			methods.setValue('publishedDate', parsedDate);
-			methods.setValue('publisher', editRole.publisher || '');
-			methods.setValue('description', editRole.description || '');
-		} else if (isOpenModal) {
-			methods.reset({
-				title: '',
-				author: '',
-				price: 0,
-				categoryID: 0,
-				quantity: 0,
-				publishedDate: null,
-				publisher: '',
-				description: ''
-			});
-			setSelectedImage(null);
-			setImagePreview(null);
 		}
-	}, [isOpenModal, editRole, selectedImage, categoryOptions]);
+	}, [isOpenModal, editRole, categoryOptions]);
 
 	const handleSubmitForm = async (data: any) => {
 		const formData = new FormData();
 
-		if (!editRole.image && !selectedImage) {
+		if ((!editRole || !editRole.image) && !selectedImage) {
 			console.error('Hình ảnh không được để trống');
 			return;
 		}
@@ -138,9 +138,20 @@ const FormModal = ({
 		if (e.target.files && e.target.files.length > 0) {
 			const file = e.target.files[0];
 			setSelectedImage(file);
-			setImagePreview(URL.createObjectURL(file));
+			const previewUrl = URL.createObjectURL(file);
+			setImagePreview(previewUrl);
 		}
 	};
+
+	useEffect(() => {
+		if (isOpenModal && !editRole) {
+			setImagePreview(null);
+		}
+	}, [isOpenModal, editRole]);
+
+	useEffect(() => {
+		console.log('Image preview updated:', imagePreview);
+	}, [imagePreview]);
 
 	return (
 		<CRUDModal
@@ -199,7 +210,9 @@ const FormModal = ({
 									name="image"
 									hidden
 									accept="image/*"
-									onChange={handleImageChange}
+									onChange={(e) => {
+										handleImageChange(e);
+									}}
 								/>
 							</Grid>
 
@@ -210,7 +223,7 @@ const FormModal = ({
 											label="Tiêu đề"
 											name="title"
 											control={methods.control}
-											// required
+											required
 										/>
 									</Grid>
 									<Grid item xs={6}>
@@ -218,7 +231,7 @@ const FormModal = ({
 											label="Tác giả"
 											name="author"
 											control={methods.control}
-											// required
+											required
 										/>
 									</Grid>
 
@@ -227,7 +240,7 @@ const FormModal = ({
 											label="Giá"
 											name="price"
 											control={methods.control}
-											// required
+											required
 											type="number"
 										/>
 									</Grid>
@@ -238,7 +251,7 @@ const FormModal = ({
 											control={methods.control}
 											options={categoryOptions}
 											defaultValue={methods.watch('categoryID') || 0}
-											// required
+											required
 										/>
 									</Grid>
 								</Grid>
@@ -250,7 +263,7 @@ const FormModal = ({
 										name="quantity"
 										control={methods.control}
 										type="number"
-										// required
+										required
 									/>
 								</Grid>
 
@@ -261,7 +274,7 @@ const FormModal = ({
 										control={methods.control}
 										value={methods.watch('publishedDate') || null}
 										onChange={(newValue: any) => methods.setValue('publishedDate', newValue)}
-										// required
+										required
 										type="date"
 									/>
 								</Grid>
@@ -270,7 +283,7 @@ const FormModal = ({
 										label="Nhà xuất bản"
 										name="publisher"
 										control={methods.control}
-										// required
+										required
 									/>
 								</Grid>
 							</Grid>
@@ -280,7 +293,7 @@ const FormModal = ({
 									label="Mô tả"
 									name="description"
 									control={methods.control}
-									// required
+									required
 									multiline
 									// rows={2}
 								/>
